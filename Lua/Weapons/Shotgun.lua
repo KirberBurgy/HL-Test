@@ -4,9 +4,16 @@ HL.Shotgun = {
     Class = HL.WeaponClass.Primary,
 
     PrimaryFire = {
-        ClipSize = 8,
-        CurrentClipSize = 0,
+
         AmmoType = HL.AmmunitionType.Shell,
+
+        Reload = {
+            ClipSize = 8,
+            CurrentClip = 0,
+            ReloadDelay = 15,
+            OneByOne = true
+        },
+
         Fire = {
             Cooldown = 25,
             Automatic = false,
@@ -44,7 +51,7 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
 
     HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
     HL.SetAnimation(player, HL.AnimationType.Secondary)
-    
+
     return true
 end, HL.Shotgun.Name)
 

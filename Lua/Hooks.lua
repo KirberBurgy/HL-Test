@@ -110,13 +110,13 @@ local function PlayerHasEnoughSecondaryAmmo(hl)
     if hl.CurrentWeapon.SecondaryFire.AmmoType == HL.AmmunitionType.None then
         return
     end
-    
-    if hl.CurrentWeapon.SecondaryFire.Reload then
-        if hl.CurrentWeapon.SecondaryFire.AmmoType ~= HL.UsesPrimaryClip then
-            return hl.CurrentWeapon.SecondaryFire.Reload.CurrentClip >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
-        end
-            
+
+    if hl.CurrentWeapon.SecondaryFire.AmmoType == HL.UsesPrimaryClip then
         return hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
+    end
+
+    if hl.CurrentWeapon.SecondaryFire.Reload then
+        return hl.CurrentWeapon.SecondaryFire.Reload.CurrentClip >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
     else
         return (hl.Inventory.Ammo[hl.CurrentWeapon.SecondaryFire.AmmoType] and hl.Inventory.Ammo[hl.CurrentWeapon.SecondaryFire.AmmoType] >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo)
     end
@@ -128,15 +128,15 @@ local function DeductPlayerAmmo(hl, fire_mode)
     if fire_mode.AmmoType == HL.AmmunitionType.None then
         return
     end
-
-    if not fire_mode.Reload then
-        hl.Inventory.Ammo[fire_mode.AmmoType] = $ - fire_mode.Fire.RequiredAmmo
+    
+    if fire_mode.AmmoType == HL.UsesPrimaryClip then
+        hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ - fire_mode.Fire.RequiredAmmo
         
         return
     end
 
-    if fire_mode.AmmoType == HL.UsesPrimaryClip then
-        hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ - fire_mode.Fire.RequiredAmmo
+    if not fire_mode.Reload then
+        hl.Inventory.Ammo[fire_mode.AmmoType] = $ - fire_mode.Fire.RequiredAmmo
         
         return
     end
