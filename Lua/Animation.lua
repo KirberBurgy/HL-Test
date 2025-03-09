@@ -1,8 +1,4 @@
 HL.AnimationType = {
-    -- This animation will never be
-    -- played by the Half Life mod.
-    Custom      = 0,
-
     -- This animation is played when
     -- the weapon is first collected,
     -- or when the weapon is re-equipped.
@@ -31,7 +27,11 @@ HL.AnimationType = {
     -- play if the weapon's secondary fire
     -- has the DoesNotReload or UsesPrimaryClip
     -- properties.
-    SecondaryReload = 6
+    SecondaryReload = 6,
+
+    -- Animations with type numbers greater than six
+    -- will never be played by the Half Life mod.
+    Custom      = 0,
 }
 
 ---@param player player_t
