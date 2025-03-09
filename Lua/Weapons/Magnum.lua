@@ -4,9 +4,14 @@ HL.Magnum = {
     Class = HL.WeaponClass.Handgun,
 
     PrimaryFire = {
-        ClipSize = 6,
-        CurrentClipSize = 0,
         AmmoType = HL.AmmunitionType.Cartridge,
+
+        Reload = {
+            ClipSize = 6,
+            CurrentClip = 0,
+            ReloadDelay = 85
+        },
+        
         Fire = {
             Cooldown = 27,
             Automatic = true,
@@ -20,4 +25,20 @@ HL.Magnum = {
             }
         }
     }
+}
+
+HL.Viewmodels[HL.Magnum.Name] = {
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("357READY", 7, { [1] = 3 }),
+
+    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("357FIRE", 8, { 
+        [1] = 2,
+        [2] = 3
+    }),
+
+    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("357RELOAD", 28, {
+        [1] = 6,
+        [2] = 4,
+        [5] = 3,
+        [26] = 8
+    })
 }
