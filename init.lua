@@ -83,7 +83,12 @@ HL.Hooks = {
     -- hits an object.
     -- Hook signature:
     -- `addHook("HL_OnProjectileHit", function(player_t player, mobj_t weapon_projectile, mobj_t target), [string weapon_name])` 
-    OnProjectileHit     = {}
+    OnProjectileHit     = {},
+
+    -- Called whenever a pickup is touched.
+    -- Hook signature:
+    -- `addHook("HL_OnPickupGained", function(player_t player), [MT_* object_type])
+    OnPickupGained      = {}
 }
 
 ---@alias hlhooktype hooktype 
@@ -99,6 +104,7 @@ HL.Hooks = {
 ---| "HL_OnWeaponHit"
 ---| "HL_OnHitscanHit"
 ---| "HL_OnProjectileHit"
+---| "HL_OnPickupGained"
 
 ---@param hook hlhooktype
 ---@param func function
@@ -147,26 +153,13 @@ dofile("Weapons/SMG.lua")
 
 dofile("Inventory.lua")
 dofile("Hooks.lua")
+dofile("Pickup.lua")
 
 dofile("UI/HUD.lua")
 dofile("UI/Viewmodel.lua")
 
-addHook("HL_OnWeaponHit", function(player, projectile, target)
-    if not (target.flags & (MF_ENEMY | MF_BOSS | MF_MONITOR)) then
-        return
-    end
+HL.RegisterPickup(MT_INFINITYRING)
+HL.RegisterPickup(MT_SCATTERRING)
+HL.RegisterPickup(MT_RAILRING)
 
-    print(projectile.HL.SourceWeapon.Name .. " hit enemy.")
-
-    P_SpawnMobjFromMobj(projectile, 0, 0, 0, MT_RING)
-end)
-
-addHook("HL_OnWeaponLineHit", function(player, projectile, line)
-    print(projectile.HL.SourceWeapon.Name .. " hit line.")
-
-    P_SpawnMobjFromMobj(projectile, 0, 0, 0, MT_RING)
-end)
-
-addHook("HL_OnEquip", function(player, weapon)
-    HL.SetAnimation(player, HL.AnimationType.Ready)
-end)
+HL.RegisterPickup(MT_SCATTERPICKUP)

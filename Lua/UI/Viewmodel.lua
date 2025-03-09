@@ -23,24 +23,24 @@ addHook("HL_FreemanThinker", function(player)
     ---@class hlweaponanim_t
     local animation = viewmodel[hl.ViewmodelData.State]
 
-    if not animation or not animation.Durations[hl.ViewmodelData.Progress] then
+    if not animation or not animation.Durations or not animation.Durations[hl.ViewmodelData.Progress] then
         return
     end
 
     hl.ViewmodelData.Clock = $ + 1
         
     if hl.ViewmodelData.Clock >= animation.Durations[hl.ViewmodelData.Progress] then
-        print("A")
-
         hl.ViewmodelData.Progress = $ + 1
         hl.ViewmodelData.Clock = 1
     end
 
-    if hl.ViewmodelData.Progress >= #animation.Durations then
+    if hl.ViewmodelData.Progress >= animation.Length then
         hl.ViewmodelData.Progress = 1
         hl.ViewmodelData.Clock = 1
 
-        HL.SetAnimation(player, HL.AnimationType.Idle)
+        print( HL.NextAnimation(hl) )
+        
+        HL.SetAnimation(player, HL.NextAnimation(hl))
     end
 end)
 
@@ -68,7 +68,7 @@ addHook("HUD", function(drawer, player, camera)
     ---@class hlweaponanim_t
     local animation = viewmodel[hl.ViewmodelData.State]
 
-    if not animation then
+    if not animation or not animation.Sentinel then
         return
     end
 

@@ -61,6 +61,7 @@ HL.UsesPrimaryClip = -1
 ---@field ClipSize integer The maximum size of the clip.
 ---@field CurrentClip integer The number of bullets remaining in the clip.
 ---@field ReloadDelay tic_t The time, in tics, required to reload this weapon.
+---@field OneByOne boolean Whether or not the weapon reloads one bullet at a time.
 
 ---@class hlweaponfire_t
 ---@field Fire hlfire_t The data of the mode of fire.

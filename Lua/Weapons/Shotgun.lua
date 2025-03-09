@@ -39,6 +39,46 @@ HL.Shotgun = {
     }
 }
 
+HL.Viewmodels[HL.Shotgun.Name] = {
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SHOTGUNREADY", 5, { [1] = 3 }),
+    [HL.AnimationType.Idle] = HL.NewWeaponAnimation("SHOTGUNIDLE1-", 10, { [1] = 8 }),
+    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SHOTGUNFIRE", 12, { [1] = 3 }),
+    [HL.AnimationType.Secondary] = HL.NewWeaponAnimation("SHOTGUNAFIRE", 19, {
+        [1] = 3,
+        [2] = 2,
+        [3] = 3,
+        [4] = 2,
+        [5] = 3,
+        [6] = 2,
+        [7] = 3,
+        [8] = 2,
+        [9] = 3,
+        [10] = 2,
+        [11] = 3,
+        [12] = 2,
+        [13] = 3,
+        [14] = 2,
+        [15] = 3,
+        [16] = 2,
+        [17] = 3,
+        [18] = 2,
+        [19] = 3,
+        [20] = 6,
+    }),
+
+    [HL.AnimationType.ReloadStart] = HL.NewWeaponAnimation("SHOTGUNRELOADS", 7, {
+        [1] = 3
+    }),
+    
+    [HL.AnimationType.ReloadLoop] = HL.NewWeaponAnimation("SHOTGUNRELOADL", 6, {
+        [1] = 4
+    }),
+    
+    [HL.AnimationType.ReloadEnd] = HL.NewWeaponAnimation("SHOTGUNRELOADE", 8, {
+        [1] = 4
+    }),
+}
+
 ---@param player player_t
 ---@param weapon hlweapon_t
 addHook("HL_OnPrimaryUse", function(player, weapon)

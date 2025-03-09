@@ -128,7 +128,7 @@ local function DeductPlayerAmmo(hl, fire_mode)
     if fire_mode.AmmoType == HL.AmmunitionType.None then
         return
     end
-    
+
     if fire_mode.AmmoType == HL.UsesPrimaryClip then
         hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ - fire_mode.Fire.RequiredAmmo
         
@@ -243,8 +243,20 @@ addHook("HL_FreemanThinker", function(player)
 
     if hl.Cooldown > 0 then
         hl.Cooldown = $ - 1
-    else
-        if hl.Reloading then
+    elseif hl.Reloading then
+        if hl.CurrentWeapon.PrimaryFire.Reload.OneByOne then 
+            print("???")
+
+            hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ + 1
+            hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] = $ - 1
+
+            hl.Cooldown = hl.CurrentWeapon.PrimaryFire.Reload.ReloadDelay
+
+            hl.Reloading = 
+                hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip ~= hl.CurrentWeapon.PrimaryFire.Reload.ClipSize
+                or hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] == 0
+        else
+
             local to_add = min(
             hl.CurrentWeapon.PrimaryFire.Reload.ClipSize - hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip, 
             hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType])
@@ -258,12 +270,14 @@ addHook("HL_FreemanThinker", function(player)
 
     if hl.CurrentWeapon.PrimaryFire.Reload 
     and hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip == 0 
+    and hl.Cooldown == 0
     and not hl.Reloading
     and hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] > 0 then
         hl.Cooldown = hl.CurrentWeapon.PrimaryFire.Reload.ReloadDelay
         hl.Reloading = true
 
-        HL.SetAnimation(player, HL.AnimationType.Reload)
+        HL.SetAnimation(player, 
+            hl.CurrentWeapon.PrimaryFire.Reload.OneByOne and HL.AnimationType.ReloadStart or HL.AnimationType.Reload)
     end
 end)
 

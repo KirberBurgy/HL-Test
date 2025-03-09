@@ -9,30 +9,56 @@ HL.AnimationType = {
     Idle        = 2,
 
     -- This animation is played when
-    -- the secondary mode is fired.
-    Secondary   = 3,
-
-    -- This animation is played when
     -- the primary mode is fired.
-    Primary     = 4,
+    Primary     = 3,
 
     -- This animation is played when
-    -- the weapon is reloaded. This animation
-    -- will be repeated if the weapon
-    -- reloads one-by-one.
+    -- the secondary mode is fired.
+    Secondary   = 4,
+
+    -- This animation is played when
+    -- the weapon is reloaded. If your weapon
+    -- uses a looped reload, then use
+    -- ReloadStart, ReloadLoop, and ReloadEnd
+    -- in conjunction.
     Reload      = 5,
 
-    -- This animation is played when the
-    -- secondary clip runs out. It will not
-    -- play if the weapon's secondary fire
-    -- has the DoesNotReload or UsesPrimaryClip
-    -- properties.
-    SecondaryReload = 6,
+    -- This animation is played when a
+    -- weapon with a one-by-one reload
+    -- begins to reload.
+    ReloadStart = 6,
 
-    -- Animations with type numbers greater than six
+    -- This animation is played when a
+    -- weapon with a one-by-one reload
+    -- reloads a single bullet.
+    ReloadLoop = 7,
+
+    -- This animation is played when a
+    -- weapon with a one-by-one reload
+    -- finishes reloading.
+    ReloadEnd = 8,
+
+    -- Animations with type numbers greater than eight
     -- will never be played by the Half Life mod.
     Custom      = 0,
 }
+
+---@param hl hlplayer_t
+function HL.NextAnimation(hl)
+    if hl.ViewmodelData.State == HL.AnimationType.ReloadStart then
+        return HL.AnimationType.ReloadLoop
+    end
+
+    if hl.ViewmodelData.State == HL.AnimationType.ReloadLoop
+        if hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip == hl.CurrentWeapon.PrimaryFire.Reload.ClipSize then
+            return HL.AnimationType.ReloadEnd
+        end
+
+        return HL.AnimationType.ReloadLoop
+    end
+
+    return HL.AnimationType.Idle
+end
 
 ---@param player player_t
 ---@param animation integer
