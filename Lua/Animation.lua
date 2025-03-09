@@ -25,6 +25,13 @@ HL.AnimationType = {
     -- will be repeated if the weapon
     -- reloads one-by-one.
     Reload      = 5,
+
+    -- This animation is played when the
+    -- secondary clip runs out. It will not
+    -- play if the weapon's secondary fire
+    -- has the DoesNotReload or UsesPrimaryClip
+    -- properties.
+    SecondaryReload = 6
 }
 
 ---@param player player_t
@@ -49,22 +56,54 @@ end
 
 -- Encapsulates a weapon animation. Weapon animations should be stored
 -- in folders with frames ranging from 1-n, where n is the number of frames.
----@class hlweaponanim_t hlanimframe_t[]
+---@class hlweaponanim_t
+---@field Sentinel string The name of the first frame. Following frames should come in a succession.
+---@field Length integer The number of frames in the animation.
+---@field Durations tic_t[] The duration, in tics, of each frame.
 
---- Returns the raw data of frames
---- with similar properties in sequence.
----@param path string
----@param start_frame integer
----@param frame_steps integer
----@param duration tic_t
-function HL.UnpackFrameSet(target_table, path, start_frame, frame_steps, duration)
-    for i = 0, frame_steps - 1 do
-        table.insert(target_table,
-            {
-                FrameLength = duration,
-                FrameName = path .. start_frame + i
-            })
+local function KeywiseSort(t) 
+    local sorted_keys = {} 
+    for key, _ in pairs(t) do
+        table.insert(sorted_keys, key)
     end
+
+    table.sort(sorted_keys)
+    return sorted_keys
+end
+
+---@param sentinel string
+---@param frame_count integer
+---@param durations tic_t[]
+---@return hlweaponanim_t
+function HL.NewWeaponAnimation(sentinel, frame_count, durations)
+    ---@class hlweaponanim_t
+    local animation = {
+        Sentinel = sentinel,
+        Length = frame_count,
+        Durations = {}
+    }
+
+    local sorted_keys = KeywiseSort(durations)
+
+    local last_frame = sorted_keys[1] 
+    animation.Durations[last_frame] = durations[last_frame]
+
+    for i = 2, #sorted_keys do
+        local frame = sorted_keys[i]
+
+        for j = last_frame + 1, frame - 1 do
+            animation.Durations[j] = durations[last_frame]
+        end
+
+        animation.Durations[frame] = durations[frame]
+        last_frame = frame
+    end
+
+    for i = last_frame + 1, frame_count do
+        animation.Durations[i] = durations[last_frame]
+    end
+
+    return animation
 end
 
 HL.Viewmodels = {}

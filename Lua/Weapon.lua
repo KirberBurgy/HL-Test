@@ -56,11 +56,16 @@ HL.DoesNotReload = 0
 -- to signify that it takes ammunition from the primary fire's clip.
 HL.UsesPrimaryClip = -1
 
+
+---@class hlreload_t
+---@field ClipSize integer The maximum size of the clip.
+---@field CurrentClip integer The number of bullets remaining in the clip.
+---@field ReloadDelay tic_t The time, in tics, required to reload this weapon.
+
 ---@class hlweaponfire_t
 ---@field Fire hlfire_t The data of the mode of fire.
+---@field Reload hlreload_t? The reload data of this mode of fire.
 ---@field AmmoType integer The ammunition type used by this mode of fire. If this is equal to HL.UsesPrimaryClip, it will use the same ammunition type as the primary fire.
----@field ClipSize integer The maximum clip size of the mode of fire. If this is HL.DoesNotReload, the weapon has no clip and will fire using ammunition in the inventory. If AmmoType is HL.UsesPrimaryClip, this will use ammunition from the primary clip.
----@field CurrentClipSize integer The number of bullets remaining in the weapon's clip. This property is unaffected if ClipSize is HL.UsesPrimaryClip or HL.DoesNotReload. 
 
 ---@class hlweapon_t
 ---@field Name string The name of the weapon, so that it can be filtered in hooks. This is also the name of the corresponding viewmodel.

@@ -30,7 +30,7 @@ COM_AddCommand("addammo", function(player, arg1, arg2)
         return
     end
 
-    hl.Inventory.Ammo[ammo_type] = min(HL.AmmoInfo[ammo_type].Maximum, ammo_count)
+    hl.Inventory.Ammo[ammo_type] = max( min(HL.AmmoInfo[ammo_type].Maximum, ammo_count), 0 )
 end)
 
 HL.AmmunitionType = {

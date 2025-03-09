@@ -22,8 +22,8 @@ addHook("HUD", function(drawer, player, camera)
             drawer.drawString(200, 160, "Ammo: " .. hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType], V_SNAPTOBOTTOM | V_SNAPTORIGHT)
         end
 
-        if hl.CurrentWeapon.PrimaryFire.ClipSize ~= HL.DoesNotReload then
-            drawer.drawString(200, 180, "Clip: " .. hl.CurrentWeapon.PrimaryFire.CurrentClipSize, V_SNAPTOBOTTOM | V_SNAPTORIGHT)
+        if hl.CurrentWeapon.PrimaryFire.Reload then
+            drawer.drawString(200, 180, "Clip: " .. hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip, V_SNAPTOBOTTOM | V_SNAPTORIGHT)
         end
     end
 

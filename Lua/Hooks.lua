@@ -98,8 +98,8 @@ local function PlayerHasEnoughPrimaryAmmo(hl)
         return
     end
 
-    if hl.CurrentWeapon.PrimaryFire.ClipSize ~= HL.DoesNotReload 
-        return hl.CurrentWeapon.PrimaryFire.CurrentClipSize >= hl.CurrentWeapon.PrimaryFire.Fire.RequiredAmmo
+    if hl.CurrentWeapon.PrimaryFire.Reload then
+        return hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip >= hl.CurrentWeapon.PrimaryFire.Fire.RequiredAmmo
     end
 
     return hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] >= hl.CurrentWeapon.PrimaryFire.Fire.RequiredAmmo
@@ -111,12 +111,12 @@ local function PlayerHasEnoughSecondaryAmmo(hl)
         return
     end
     
-    if hl.CurrentWeapon.SecondaryFire.ClipSize ~= HL.DoesNotReload then
+    if hl.CurrentWeapon.SecondaryFire.Reload then
         if hl.CurrentWeapon.SecondaryFire.AmmoType ~= HL.UsesPrimaryClip then
-            return hl.CurrentWeapon.SecondaryFire.CurrentClipSize >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
+            return hl.CurrentWeapon.SecondaryFire.Reload.CurrentClip >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
         end
             
-        return hl.CurrentWeapon.PrimaryFire.CurrentClipSize >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
+        return hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo
     else
         return (hl.Inventory.Ammo[hl.CurrentWeapon.SecondaryFire.AmmoType] and hl.Inventory.Ammo[hl.CurrentWeapon.SecondaryFire.AmmoType] >= hl.CurrentWeapon.SecondaryFire.Fire.RequiredAmmo)
     end
@@ -129,19 +129,19 @@ local function DeductPlayerAmmo(hl, fire_mode)
         return
     end
 
-    if fire_mode.ClipSize == HL.DoesNotReload then
+    if not fire_mode.Reload then
         hl.Inventory.Ammo[fire_mode.AmmoType] = $ - fire_mode.Fire.RequiredAmmo
         
         return
     end
 
     if fire_mode.AmmoType == HL.UsesPrimaryClip then
-        hl.CurrentWeapon.PrimaryFire.CurrentClipSize = $ - fire_mode.Fire.RequiredAmmo
+        hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ - fire_mode.Fire.RequiredAmmo
         
         return
     end
 
-    fire_mode.CurrentClipSize = $ - fire_mode.Fire.RequiredAmmo
+    fire_mode.Reload.CurrentClip = $ - fire_mode.Fire.RequiredAmmo
 end
 
 ---@param player player_t
@@ -243,15 +243,27 @@ addHook("HL_FreemanThinker", function(player)
 
     if hl.Cooldown > 0 then
         hl.Cooldown = $ - 1
-    end
-
-    if hl.CurrentWeapon.PrimaryFire.CurrentClipSize == 0 and hl.CurrentWeapon.PrimaryFire.ClipSize ~= HL.DoesNotReload then
-        local to_add = min(
-            hl.CurrentWeapon.PrimaryFire.ClipSize - hl.CurrentWeapon.PrimaryFire.CurrentClipSize, 
+    else
+        if hl.Reloading then
+            local to_add = min(
+            hl.CurrentWeapon.PrimaryFire.Reload.ClipSize - hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip, 
             hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType])
 
-        hl.CurrentWeapon.PrimaryFire.CurrentClipSize = $ + to_add
-        hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] = $ - to_add
+            hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ + to_add
+            hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] = $ - to_add
+
+            hl.Reloading = false
+        end
+    end
+
+    if hl.CurrentWeapon.PrimaryFire.Reload 
+    and hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip == 0 
+    and not hl.Reloading
+    and hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] > 0 then
+        hl.Cooldown = hl.CurrentWeapon.PrimaryFire.Reload.ReloadDelay
+        hl.Reloading = true
+
+        HL.SetAnimation(player, HL.AnimationType.Reload)
     end
 end)
 

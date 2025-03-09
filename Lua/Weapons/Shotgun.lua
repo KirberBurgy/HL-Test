@@ -43,6 +43,8 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
     end
 
     HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
+    HL.SetAnimation(player, HL.AnimationType.Secondary)
+    
     return true
 end, HL.Shotgun.Name)
 
@@ -55,5 +57,7 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
 
     HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
     HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
+
+    HL.SetAnimation(player, HL.AnimationType.Secondary)
     return true
 end, HL.Shotgun.Name)

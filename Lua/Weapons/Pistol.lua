@@ -3,9 +3,14 @@ HL.Pistol = {
     Name = "9mm Pistol",
     Class = HL.WeaponClass.Handgun,
     PrimaryFire = {
-        ClipSize = 17,
-        CurrentClipSize = 0,
         AmmoType = HL.AmmunitionType.Bullet,
+
+        Reload = {
+            ClipSize = 17,
+            CurrentClip = 0,
+            ReloadDelay = 66
+        },
+
         Fire = {
             Cooldown = 9,
             Automatic = true,
@@ -35,18 +40,24 @@ HL.Pistol = {
 }
 
 HL.Viewmodels[HL.Pistol.Name] = {
-    [HL.AnimationType.Ready]        = {},
-    [HL.AnimationType.Idle]         = {},
-    [HL.AnimationType.Primary]      = {},
-    [HL.AnimationType.Secondary]    = {}
+    [HL.AnimationType.Ready]        = HL.NewWeaponAnimation("PISTOL_READY", 7, { [1] = 3 }),
+    [HL.AnimationType.Idle]         = HL.NewWeaponAnimation("PISTOL_IDLE", 47, {
+        [1] = 8,
+        [23] = 12,
+        [32] = 8,
+        [33] = 10
+    }),
+
+    [HL.AnimationType.Primary]      = HL.NewWeaponAnimation("PISTOL_FIRE", 9, {
+        [1] = 2
+    }),
+
+    [HL.AnimationType.Secondary]    = HL.NewWeaponAnimation("PISTOL_SFIRE", 10, {
+        [1] = 1,
+        [2] = 2
+    }),
+
+    [HL.AnimationType.Reload]       = HL.NewWeaponAnimation("PISTOL_RELOAD", 12, {
+        [1] = 6
+    })
 }
-
-HL.UnpackFrameSet(HL.Viewmodels[HL.Pistol.Name][HL.AnimationType.Ready], "PISTOL_READY", 1,  7,  3)
-
-HL.UnpackFrameSet(HL.Viewmodels[HL.Pistol.Name][HL.AnimationType.Idle], "PISTOL_IDLE1", 1, 20, 8)
-HL.UnpackFrameSet(HL.Viewmodels[HL.Pistol.Name][HL.AnimationType.Idle], "PISTOL_IDLE2", 1, 11,  8)
-HL.UnpackFrameSet(HL.Viewmodels[HL.Pistol.Name][HL.AnimationType.Idle], "PISTOL_IDLE3", 1, 16,  8)
-
-HL.UnpackFrameSet(HL.Viewmodels[HL.Pistol.Name][HL.AnimationType.Primary], "PISTOL_FIRE", 1, 9, 2)
-
-HL.UnpackFrameSet(HL.Viewmodels[HL.Pistol.Name][HL.AnimationType.Secondary], "PISTOL_SFIRE", 1, 10, 2)

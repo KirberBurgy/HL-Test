@@ -23,18 +23,20 @@ addHook("HL_FreemanThinker", function(player)
     ---@class hlweaponanim_t
     local animation = viewmodel[hl.ViewmodelData.State]
 
-    if not animation or not animation[hl.ViewmodelData.Progress] then
+    if not animation or not animation.Durations[hl.ViewmodelData.Progress] then
         return
     end
 
     hl.ViewmodelData.Clock = $ + 1
         
-    if hl.ViewmodelData.Clock >= animation[hl.ViewmodelData.Progress].FrameLength then
+    if hl.ViewmodelData.Clock >= animation.Durations[hl.ViewmodelData.Progress] then
+        print("A")
+
         hl.ViewmodelData.Progress = $ + 1
         hl.ViewmodelData.Clock = 1
     end
 
-    if hl.ViewmodelData.Progress >= #animation then
+    if hl.ViewmodelData.Progress >= #animation.Durations then
         hl.ViewmodelData.Progress = 1
         hl.ViewmodelData.Clock = 1
 
@@ -66,10 +68,12 @@ addHook("HUD", function(drawer, player, camera)
     ---@class hlweaponanim_t
     local animation = viewmodel[hl.ViewmodelData.State]
 
-    if not animation or not animation[hl.ViewmodelData.Progress] then
+    if not animation then
         return
     end
 
-    local patch = drawer.cachePatch( animation[hl.ViewmodelData.Progress].FrameName )
+    --print(animation.Sentinel .. hl.ViewmodelData.Progress)
+
+    local patch = drawer.cachePatch( animation.Sentinel .. hl.ViewmodelData.Progress )
     drawer.drawScaled(160 * FU, 106 * FU, FRACUNIT, patch, V_SNAPTOBOTTOM | V_FLIP)
 end, "game")
