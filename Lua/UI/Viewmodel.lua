@@ -1,6 +1,6 @@
 ---@param player player_t
 addHook("HL_FreemanThinker", function(player)
-    if not player.HL then
+    if not (player.HL and player.HL.CurrentWeapon) then
         return
     end
 
@@ -38,8 +38,6 @@ addHook("HL_FreemanThinker", function(player)
         hl.ViewmodelData.Progress = 1
         hl.ViewmodelData.Clock = 1
 
-        print( HL.NextAnimation(hl) )
-        
         HL.SetAnimation(player, HL.NextAnimation(hl))
     end
 end)
@@ -71,9 +69,7 @@ addHook("HUD", function(drawer, player, camera)
     if not animation or not animation.Sentinel then
         return
     end
-
-    --print(animation.Sentinel .. hl.ViewmodelData.Progress)
-
+    
     local patch = drawer.cachePatch( animation.Sentinel .. hl.ViewmodelData.Progress )
     drawer.drawScaled(160 * FU, 106 * FU, FRACUNIT, patch, V_SNAPTOBOTTOM | V_FLIP)
 end, "game")

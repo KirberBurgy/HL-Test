@@ -19,11 +19,11 @@ addHook("HUD", function(drawer, player, camera)
         drawer.drawString(100, 100, hl.CurrentWeapon.Name, flags)
 
         if hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] ~= nil then
-            drawer.drawString(260, 160, "Ammo: " .. hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType], V_SNAPTOBOTTOM | V_SNAPTORIGHT)
+            drawer.drawString(240, 160, "Ammo: " .. hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType], V_SNAPTOBOTTOM | V_SNAPTORIGHT)
         end
 
         if hl.CurrentWeapon.PrimaryFire.Reload then
-            drawer.drawString(260, 180, "Clip: " .. hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip, V_SNAPTOBOTTOM | V_SNAPTORIGHT)
+            drawer.drawString(240, 180, "Clip: " .. hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip, V_SNAPTOBOTTOM | V_SNAPTORIGHT)
         end
     end
 
@@ -81,7 +81,11 @@ addHook("HL_FreemanThinker", function(player)
 
     if (player.cmd.buttons & BT_WEAPONNEXT) then
         if not hl.WeaponPalette.Open then
-            hl.WeaponPalette.Open = true
+            hl.WeaponPalette.Open = #hl.Inventory.Weapons ~= 0
+
+            repeat
+                hl.WeaponPalette.Class = $ + 1
+            until hl.Inventory.Weapons[hl.WeaponPalette.Class] and #hl.Inventory.Weapons[hl.WeaponPalette.Class] > 0
         else
 
             if hl.WeaponPalette.Item == #hl.Inventory.Weapons[hl.WeaponPalette.Class] then
@@ -113,6 +117,8 @@ addHook("HL_FreemanThinker", function(player)
         end
 
         hl.CurrentWeapon = weapon
+        hl.Cooldown = 10
+        HL.SetAnimation(player, HL.AnimationType.Ready)
 
         for _, hook in ipairs(HL.Hooks.OnEquip) do
             if not hook.Extra or hook.Extra == hl.CurrentWeapon.Name then

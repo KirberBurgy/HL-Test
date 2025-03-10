@@ -50,7 +50,10 @@ function HL.NextAnimation(hl)
     end
 
     if hl.ViewmodelData.State == HL.AnimationType.ReloadLoop
-        if hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip == hl.CurrentWeapon.PrimaryFire.Reload.ClipSize then
+        if hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip == hl.CurrentWeapon.PrimaryFire.Reload.ClipSize
+        or hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] == 0 
+        then
+
             return HL.AnimationType.ReloadEnd
         end
 

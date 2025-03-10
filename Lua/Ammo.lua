@@ -1,42 +1,7 @@
 ---@class hl hlplayer_t
 function HL.AddAmmo(hl, ammo_type, ammo)
-    hl.Inventory.Ammo[ammo_type] = max( min(HL.AmmoInfo[ammo_type].Maximum, ammo), 0 )
+    hl.Inventory.Ammo[ammo_type] = max( min(HL.AmmoInfo[ammo_type].Maximum, $ + ammo), 0 )
 end
-
-COM_AddCommand("addammo", function(player, arg1, arg2)
-    if not player or not player.mo or not player.HL then
-        return
-    end
-
-    ---@class hlplayer_t
-    local hl = player.HL
-
-    if not arg1 then
-        CONS_Printf(player, "Types of ammo:")
-        CONS_Printf(player, "\t9mm, SMG:                1")
-        CONS_Printf(player, "\t.357:                    2")
-        CONS_Printf(player, "\tShotgun:                 3")
-        CONS_Printf(player, "\tCrossbow:                4")
-        CONS_Printf(player, "\tRPG:                     5")
-        CONS_Printf(player, "\tTau Cannon, Gluon Gun:   6")
-        CONS_Printf(player, "\tFrag Grenade:            7")
-        CONS_Printf(player, "\tSatchel Charge:          8")
-        CONS_Printf(player, "\tTrip Mine:               9")
-        CONS_Printf(player, "\tSnark:                   10")
-        CONS_Printf(player, "\tSMG Grenade:             11")
-
-        return
-    end
-
-    local ammo_type = tonumber(arg1)
-    local ammo_count = tonumber(arg2)
-
-    if not ammo_type or ammo_type < 1 or ammo_type > 11 or not ammo_type then
-        return
-    end
-
-    HL.AddAmmo(hl, ammo_type, ammo_count)
-end)
 
 HL.AmmunitionType = {
     --- Crowbar, Hive Hand
@@ -67,6 +32,53 @@ HL.AmmunitionType = {
         TripMine        = 9,
         Snark           = 10,
         MP5Grenade      = 11
+    }
+}
+
+
+HL.AmmoInfo = {
+    [HL.AmmunitionType.Bullet] = {
+        Maximum = 250
+    },
+
+    [HL.AmmunitionType.Cartridge] = {
+        Maximum = 36
+    },
+
+    [HL.AmmunitionType.Shell] = {
+        Maximum = 125
+    },
+
+    [HL.AmmunitionType.Bolt] = {
+        Maximum = 50
+    },
+
+    [HL.AmmunitionType.Rocket] = {
+        Maximum = 5
+    },
+
+    [HL.AmmunitionType.Uranium] = {
+        Maximum = 100
+    },
+
+    [HL.AmmunitionType.Unique.FragGrenade] = {
+        Maximum = 10
+    },
+
+    [HL.AmmunitionType.Unique.SatchelCharge] = {
+        Maximum = 5
+    },
+
+    [HL.AmmunitionType.Unique.TripMine] = {
+        Maximum = 5
+    },
+
+    [HL.AmmunitionType.Unique.Snark] = {
+        Maximum = 15
+    },
+
+    [HL.AmmunitionType.Unique.MP5Grenade] = {
+        Maximum = 8
     }
 }
 

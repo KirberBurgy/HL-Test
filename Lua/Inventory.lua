@@ -10,51 +10,81 @@
 ---@field Player player_t
 ---@field SourceWeapon hlweapon_t
 
-HL.AmmoInfo = {
-    [HL.AmmunitionType.Bullet] = {
-        Maximum = 250
-    },
+COM_AddCommand("addammo", function(player, arg1, arg2)
+    if not player or not player.mo or not player.HL then
+        return
+    end
 
-    [HL.AmmunitionType.Cartridge] = {
-        Maximum = 36
-    },
+    ---@class hlplayer_t
+    local hl = player.HL
 
-    [HL.AmmunitionType.Shell] = {
-        Maximum = 125
-    },
+    if not arg1 then
+        CONS_Printf(player, "Types of ammo:")
+        CONS_Printf(player, "\t9mm, SMG:                1")
+        CONS_Printf(player, "\t.357:                    2")
+        CONS_Printf(player, "\tShotgun:                 3")
+        CONS_Printf(player, "\tCrossbow:                4")
+        CONS_Printf(player, "\tRPG:                     5")
+        CONS_Printf(player, "\tTau Cannon, Gluon Gun:   6")
+        CONS_Printf(player, "\tFrag Grenade:            7")
+        CONS_Printf(player, "\tSatchel Charge:          8")
+        CONS_Printf(player, "\tTrip Mine:               9")
+        CONS_Printf(player, "\tSnark:                   10")
+        CONS_Printf(player, "\tSMG Grenade:             11")
 
-    [HL.AmmunitionType.Bolt] = {
-        Maximum = 50
-    },
+        return
+    end
 
-    [HL.AmmunitionType.Rocket] = {
-        Maximum = 5
-    },
+    local ammo_type = tonumber(arg1)
+    local ammo_count = tonumber(arg2)
 
-    [HL.AmmunitionType.Uranium] = {
-        Maximum = 100
-    },
+    if not ammo_type or ammo_type < 1 or ammo_type > 11 or not ammo_type then
+        return
+    end
 
-    [HL.AmmunitionType.Unique.FragGrenade] = {
-        Maximum = 10
-    },
+    HL.AddAmmo(hl, ammo_type, ammo_count)
+end)
 
-    [HL.AmmunitionType.Unique.SatchelCharge] = {
-        Maximum = 5
-    },
+COM_AddCommand("giveweapon", function(player, arg1)
+    if not player or not player.mo or not player.HL then
+        return
+    end
 
-    [HL.AmmunitionType.Unique.TripMine] = {
-        Maximum = 5
-    },
+    ---@class hlplayer_t
+    local hl = player.HL
 
-    [HL.AmmunitionType.Unique.Snark] = {
-        Maximum = 15
-    },
+    if not arg1 then
+        CONS_Printf(player, "Weapons (CASE SENSITIVE): ")
+    end
 
-    [HL.AmmunitionType.Unique.MP5Grenade] = {
-        Maximum = 8
-    }
-}
+    local valid_name = false
+
+    for name, weapon in pairs(HL) do
+        if not (weapon and type(weapon) == "table" and weapon.Name and weapon.Class and weapon.PrimaryFire) then
+            continue
+        end
+
+        if not arg1 then
+            CONS_Printf(player, "\t" .. name)
+            
+            continue
+        end
+
+        valid_name = $ or arg1 == name
+    end
+
+    if not arg1 then
+        return
+    end
+
+    if not valid_name then
+        CONS_Printf(player, "Invalid weapon name provided.")
+
+        return
+    end
+
+    HL.GiveWeapon(hl, HL[arg1])
+end)
 
 local function NewPlayerAmmo()
     return {
@@ -74,19 +104,37 @@ end
 local function NewPlayerWeapons()
     return {
         [HL.WeaponClass.Melee]   = { 
-            [1] = RecursiveClone(HL.Crowbar) 
+
         },
         [HL.WeaponClass.Handgun] = { 
-            [1] = RecursiveClone(HL.Pistol),
-            [2] = RecursiveClone(HL.Magnum) 
+
         },
         [HL.WeaponClass.Primary] = {
-            [1] = RecursiveClone(HL.Shotgun),
-            [2] = RecursiveClone(HL.SMG)
+
         },
         [HL.WeaponClass.Experimental] = {
+
         }
     }
+end
+
+---@param hl hlplayer_t
+---@param weapon_prototype hlweapon_t
+function HL.GiveWeapon(hl, weapon_prototype)
+    hl.Inventory.Weapons[weapon_prototype.Class] = $ or {}
+
+    local weapon = RecursiveClone(weapon_prototype)
+
+    table.insert( hl.Inventory.Weapons[weapon_prototype.Class], weapon )
+    hl.CurrentWeapon = weapon
+
+    table.sort(hl.Inventory.Weapons[weapon_prototype.Class], function (a, b)
+        if not a.HUDPriority or not b.HUDPriority then
+            return true
+        end
+
+        return a.HUDPriority < b.HUDPriority
+    end)
 end
 
 addHook("HL_FreemanThinker", function(player)
@@ -101,8 +149,6 @@ addHook("HL_FreemanThinker", function(player)
 
             CurrentWeapon = nil
         }
-
-        player.HL.CurrentWeapon = player.HL.Inventory.Weapons[2][1]
 
     end
 end)

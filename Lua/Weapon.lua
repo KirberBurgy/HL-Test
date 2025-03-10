@@ -71,6 +71,7 @@ HL.UsesPrimaryClip = -1
 ---@class hlweapon_t
 ---@field Name string The name of the weapon, so that it can be filtered in hooks. This is also the name of the corresponding viewmodel.
 ---@field Class integer Where the weapon appears in the UI.
+---@field HUDPriority integer? The priority of the weapon in the HUD (higher priorities will be displayed first).
 ---@field PrimaryFire hlweaponfire_t The primary mode of fire.
 ---@field SecondaryFire hlweaponfire_t? The secondary mode of fire.
 

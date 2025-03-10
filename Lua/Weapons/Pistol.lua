@@ -12,7 +12,7 @@ HL.Pistol = {
         },
 
         Fire = {
-            Cooldown = 9,
+            Cooldown = 10,
             Automatic = true,
             Damage = FU * 8,
             DamageVariance = FU * 2,
@@ -26,7 +26,7 @@ HL.Pistol = {
     SecondaryFire = {
         AmmoType = HL.UsesPrimaryClip,
         Fire = {
-            Cooldown = 7,
+            Cooldown = 8,
             Automatic = true,
             Damage = FU * 8,
             DamageVariance = FU * 3,

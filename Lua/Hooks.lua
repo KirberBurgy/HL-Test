@@ -245,8 +245,6 @@ addHook("HL_FreemanThinker", function(player)
         hl.Cooldown = $ - 1
     elseif hl.Reloading then
         if hl.CurrentWeapon.PrimaryFire.Reload.OneByOne then 
-            print("???")
-
             hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ + 1
             hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] = $ - 1
 
@@ -254,9 +252,8 @@ addHook("HL_FreemanThinker", function(player)
 
             hl.Reloading = 
                 hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip ~= hl.CurrentWeapon.PrimaryFire.Reload.ClipSize
-                or hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] == 0
+                and hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] ~= 0
         else
-
             local to_add = min(
             hl.CurrentWeapon.PrimaryFire.Reload.ClipSize - hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip, 
             hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType])
