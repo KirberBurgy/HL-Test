@@ -100,7 +100,12 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
         HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
         HL.SetAnimation(player, HL.AnimationType.Secondary)
 
-        P_Thrust(player.mo, player.mo.angle + ANGLE_180, 80 * multiplier)
+        local yaw = player.mo.angle
+        local pitch = player.aiming
+        
+        player.mo.momx = $ + FixedMul(80 * multiplier, FixedMul(cos(yaw), cos(pitch)))
+        player.mo.momy = $ + FixedMul(80 * multiplier, FixedMul(cos(yaw), sin(pitch)))
+        P_SetObjectMomZ(player.mo, FixedMul(80 * multiplier, sin(pitch)), true)
 
         player.HL.Cooldown = 3 * TICRATE / 2
 
