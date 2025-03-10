@@ -1,3 +1,7 @@
+freeslot("sfx_smgsh1")
+freeslot("sfx_smgsh2")
+freeslot("sfx_smgsh3")
+
 HL.AmmunitionType.Unique.MP5Grenade = 11
 
 ---@class hlweapon_t

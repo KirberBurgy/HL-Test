@@ -1,3 +1,6 @@
+freeslot("sfx_357sh1")
+freeslot("sfx_357sh2")
+
 ---@class hlweapon_t
 HL.Magnum = {
     Name = ".357 Magnum",

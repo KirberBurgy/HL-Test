@@ -81,11 +81,17 @@ addHook("HL_FreemanThinker", function(player)
 
     if (player.cmd.buttons & BT_WEAPONNEXT) then
         if not hl.WeaponPalette.Open then
-            hl.WeaponPalette.Open = #hl.Inventory.Weapons ~= 0
-
             repeat
+                if hl.WeaponPalette.Class > #hl.Inventory.Weapons then
+                    hl.WeaponPalette.Class = 1
+                    
+                    return
+                end
+
                 hl.WeaponPalette.Class = $ + 1
             until hl.Inventory.Weapons[hl.WeaponPalette.Class] and #hl.Inventory.Weapons[hl.WeaponPalette.Class] > 0
+
+            hl.WeaponPalette.Open = #hl.Inventory.Weapons ~= 0
         else
 
             if hl.WeaponPalette.Item == #hl.Inventory.Weapons[hl.WeaponPalette.Class] then

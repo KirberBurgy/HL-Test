@@ -1,3 +1,5 @@
+freeslot("sfx_shgsh1")
+
 ---@class hlweapon_t
 HL.Shotgun = {
     Name = "Shotgun",
@@ -29,7 +31,7 @@ HL.Shotgun = {
     SecondaryFire = {
         AmmoType = HL.UsesPrimaryClip,
         Fire = {
-            Cooldown = 50,
+            Cooldown = 45,
             Automatic = false,
             Damage = 5 * FU,
             DamageVariance = FU,
@@ -40,42 +42,26 @@ HL.Shotgun = {
 }
 
 HL.Viewmodels[HL.Shotgun.Name] = {
-    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SHOTGUNREADY", 5, { [1] = 3 }),
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SHOTGUNREADY", 5, { [1] = 8 }),
     [HL.AnimationType.Idle] = HL.NewWeaponAnimation("SHOTGUNIDLE1-", 10, { [1] = 8 }),
-    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SHOTGUNFIRE", 12, { [1] = 3 }),
+    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SHOTGUNFIRE", 16, { [1] = 2, [5] = 4 }),
     [HL.AnimationType.Secondary] = HL.NewWeaponAnimation("SHOTGUNAFIRE", 19, {
-        [1] = 3,
-        [2] = 2,
-        [3] = 3,
-        [4] = 2,
-        [5] = 3,
-        [6] = 2,
+        [1] = 5,
         [7] = 3,
-        [8] = 2,
-        [9] = 3,
-        [10] = 2,
-        [11] = 3,
-        [12] = 2,
-        [13] = 3,
-        [14] = 2,
-        [15] = 3,
-        [16] = 2,
         [17] = 3,
-        [18] = 2,
-        [19] = 3,
         [20] = 6,
     }),
 
     [HL.AnimationType.ReloadStart] = HL.NewWeaponAnimation("SHOTGUNRELOADS", 7, {
-        [1] = 3
+        [1] = 5
     }),
     
     [HL.AnimationType.ReloadLoop] = HL.NewWeaponAnimation("SHOTGUNRELOADL", 6, {
-        [1] = 4
+        [1] = 5
     }),
     
     [HL.AnimationType.ReloadEnd] = HL.NewWeaponAnimation("SHOTGUNRELOADE", 8, {
-        [1] = 4
+        [1] = 5
     }),
 }
 
@@ -90,7 +76,7 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
     end
 
     HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
-    HL.SetAnimation(player, HL.AnimationType.Secondary)
+    HL.SetAnimation(player, HL.AnimationType.Primary)
 
     return true
 end, HL.Shotgun.Name)

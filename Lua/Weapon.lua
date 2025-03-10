@@ -2,15 +2,6 @@ freeslot("MT_HLBULLET")
 
 freeslot("sfx_9mmsh1")
 
-freeslot("sfx_357sh1")
-freeslot("sfx_357sh2")
-
-freeslot("sfx_shgsh1")
-
-freeslot("sfx_smgsh1")
-freeslot("sfx_smgsh2")
-freeslot("sfx_smgsh3")
-
 mobjinfo[MT_HLBULLET] = {
     spawnstate = S_INVISIBLE,
     spawnhealth = 1,

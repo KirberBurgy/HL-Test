@@ -83,7 +83,7 @@ COM_AddCommand("giveweapon", function(player, arg1)
         return
     end
 
-    HL.GiveWeapon(hl, HL[arg1])
+    HL.GiveWeapon(player, HL[arg1])
 end)
 
 local function NewPlayerAmmo()
@@ -118,15 +118,24 @@ local function NewPlayerWeapons()
     }
 end
 
----@param hl hlplayer_t
+---@param player player_t
 ---@param weapon_prototype hlweapon_t
-function HL.GiveWeapon(hl, weapon_prototype)
+function HL.GiveWeapon(player, weapon_prototype)
+    local hl = player.HL
+
     hl.Inventory.Weapons[weapon_prototype.Class] = $ or {}
+
+    for _, weapon in pairs(hl.Inventory.Weapons[weapon_prototype.Class]) do
+        if weapon.Name == weapon_prototype.Name then
+            return
+        end
+    end
 
     local weapon = RecursiveClone(weapon_prototype)
 
     table.insert( hl.Inventory.Weapons[weapon_prototype.Class], weapon )
     hl.CurrentWeapon = weapon
+    HL.SetAnimation(player, HL.AnimationType.Ready)
 
     table.sort(hl.Inventory.Weapons[weapon_prototype.Class], function (a, b)
         if not a.HUDPriority or not b.HUDPriority then
