@@ -1,12 +1,14 @@
+freeslot("MT_HLMELEESENTINEL")
+
 ---@class hlweapon_t
 HL.Crowbar = {
     Name = "Crowbar",
-    Class = HL.WeaponClass.Handgun,
+    Class = HL.WeaponClass.Melee,
     PrimaryFire = {
-        ClipSize = HL.DoesNotReload,
         AmmoType = HL.AmmunitionType.None,
+
         Fire = {
-            Cooldown = TICRATE / 8,
+            Cooldown = 6,
             Automatic = true,
             Damage = FU * 5,
             DamageVariance = 0,

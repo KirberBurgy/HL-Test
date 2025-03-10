@@ -42,6 +42,10 @@ HL.Shotgun = {
 }
 
 HL.Viewmodels[HL.Shotgun.Name] = {
+    Flags = V_FLIP,
+    OffsetX = 160 * FU,
+    OffsetY = 106 * FU,
+
     [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SHOTGUNREADY", 5, { [1] = 8 }),
     [HL.AnimationType.Idle] = HL.NewWeaponAnimation("SHOTGUNIDLE1-", 10, { [1] = 8 }),
     [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SHOTGUNFIRE", 16, { [1] = 2, [5] = 4 }),

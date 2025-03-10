@@ -43,8 +43,40 @@ HL.AnimationType = {
     Custom      = 0,
 }
 
----@param hl hlplayer_t
-function HL.NextAnimation(hl)
+HL.NextAnimationSlot = 9
+
+-- This maps animation numbers
+-- to their next state. If you
+-- want this mod to automatically
+-- cycle animations, define
+-- maps to animation here. The
+-- map should be laid out as such:
+-- ```lua
+-- [HL.AnimationType.Key] = function(hlplayer_t) 
+--     return HL.AnimationType.Next 
+-- end
+-- ```
+-- . Overrides to non-custom animations are disallowed for safety.
+HL.AnimationMap = {}
+
+--- This function is *not* net-safe. 
+--- Do not call it outside of file-block code.
+--- Creates a new animation type that counts as a 
+--- valid animation state.
+---@return integer An animation type. It should be stored should store it so it can be used in comparisons.
+function HL.CreateAnimationType()
+    local free_slot = HL.NextAnimationSlot
+
+    HL.NextAnimationSlot = $ + 1
+
+    return free_slot
+end
+
+---@param player player_t
+function HL.NextAnimation(player)
+    ---@class hlplayer_t
+    local hl = player.HL
+
     if hl.ViewmodelData.State == HL.AnimationType.ReloadStart then
         return HL.AnimationType.ReloadLoop
     end
@@ -58,6 +90,12 @@ function HL.NextAnimation(hl)
         end
 
         return HL.AnimationType.ReloadLoop
+    end
+
+    if hl.ViewmodelData.State > 8 then
+        local state = hl.ViewmodelData.State
+
+        return (HL.AnimationMap[state] and HL.AnimationMap[state](player)) or HL.AnimationType.Idle
     end
 
     return HL.AnimationType.Idle

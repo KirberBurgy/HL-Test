@@ -31,6 +31,10 @@ HL.Magnum = {
 }
 
 HL.Viewmodels[HL.Magnum.Name] = {
+    Flags = V_FLIP,
+    OffsetX = 160 * FU,
+    OffsetY = 106 * FU,
+
     [HL.AnimationType.Ready] = HL.NewWeaponAnimation("357READY", 7, { [1] = 3 }),
 
     [HL.AnimationType.Idle] = HL.NewWeaponAnimation("357IDLE1-", 20, {
@@ -43,7 +47,6 @@ HL.Viewmodels[HL.Magnum.Name] = {
         [1] = 2,
         [2] = 3
     }),
-
 
     [HL.AnimationType.Reload] = HL.NewWeaponAnimation("357RELOAD", 28, {
         [1] = 6,

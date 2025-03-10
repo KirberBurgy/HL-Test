@@ -145,23 +145,52 @@ dofile("Ammo.lua")
 dofile("Weapon.lua")
 dofile("Animation.lua")
 
+
 dofile("Weapons/Crowbar.lua")
 dofile("Weapons/Pistol.lua")
 dofile("Weapons/Magnum.lua")
 dofile("Weapons/Shotgun.lua")
 dofile("Weapons/SMG.lua")
+dofile("Weapons/Tau Cannon.lua")
 
 dofile("Inventory.lua")
 dofile("Hooks.lua")
 dofile("Pickup.lua")
 
-dofile("UI/HUD.lua")
 dofile("UI/Viewmodel.lua")
+dofile("UI/HUD.lua")
 
 HL.RegisterPickup(MT_RING)
 
+HL.RegisterPickup(MT_INFINITYRING)
+
+HL.RegisterPickup(MT_RAILRING)
+HL.RegisterPickup(MT_RAILPICKUP)
+
+HL.RegisterPickup(MT_SCATTERRING)
+HL.RegisterPickup(MT_SCATTERPICKUP)
+
 addHook("HL_OnPickupGained", function(player)
-    HL.AddAmmo(player.HL, HL.AmmunitionType.Bullet, 1)
-    HL.AddAmmo(player.HL, HL.AmmunitionType.Cartridge, 1)
-    HL.AddAmmo(player.HL, HL.AmmunitionType.Shell, 1)
-end, MT_RING)
+    HL.AddAmmo(player.HL, HL.AmmunitionType.Bullet, 17 * 3)
+    HL.GiveWeapon(player, HL.Pistol)
+end, MT_INFINITYRING)
+
+addHook("HL_OnPickupGained", function(player)
+    HL.AddAmmo(player.HL, HL.AmmunitionType.Cartridge, 6)
+end, MT_RAILRING)
+
+addHook("HL_OnPickupGained", function(player)
+    HL.AddAmmo(player.HL, HL.AmmunitionType.Cartridge, 12)
+
+    HL.GiveWeapon(player, HL.Magnum)
+end, MT_RAILPICKUP)
+
+addHook("HL_OnPickupGained", function(player)
+    HL.AddAmmo(player.HL, HL.AmmunitionType.Shell, 8)
+end, MT_SCATTERRING)
+
+addHook("HL_OnPickupGained", function(player)
+    HL.AddAmmo(player.HL, HL.AmmunitionType.Shell, 16)
+
+    HL.GiveWeapon(player, HL.Shotgun)
+end, MT_SCATTERPICKUP)

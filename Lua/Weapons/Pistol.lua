@@ -40,6 +40,10 @@ HL.Pistol = {
 }
 
 HL.Viewmodels[HL.Pistol.Name] = {
+    Flags = V_FLIP,
+    OffsetX = 160 * FU,
+    OffsetY = 106 * FU,
+
     [HL.AnimationType.Ready]        = HL.NewWeaponAnimation("PISTOL_READY", 7, { [1] = 3 }),
     [HL.AnimationType.Idle]         = HL.NewWeaponAnimation("PISTOL_IDLE", 47, {
         [1] = 8,

@@ -113,7 +113,6 @@ local function NewPlayerWeapons()
 
         },
         [HL.WeaponClass.Experimental] = {
-
         }
     }
 end
@@ -160,4 +159,6 @@ addHook("HL_FreemanThinker", function(player)
         }
 
     end
+    
+    player.weapondelay = INT32_MAX
 end)

@@ -163,8 +163,6 @@ local function HandlePrimaryFire(player, hl)
         end
 
         hl.Cooldown = hl.CurrentWeapon.PrimaryFire.Fire.Cooldown
-        DeductPlayerAmmo(hl, hl.CurrentWeapon.PrimaryFire)
-
         if RunFireHooks(player, hl, HL.Hooks.OnPrimaryUse) then
             return 
         end
@@ -172,6 +170,7 @@ local function HandlePrimaryFire(player, hl)
         HL.FireWeapon(player, hl.CurrentWeapon, hl.CurrentWeapon.PrimaryFire)
         HL.PlayFireSound(player.mo, hl.CurrentWeapon.PrimaryFire.Fire)
         HL.SetAnimation(player, HL.AnimationType.Primary)
+        DeductPlayerAmmo(hl, hl.CurrentWeapon.PrimaryFire)
     end
 end
 
@@ -199,7 +198,6 @@ local function HandleSecondaryFire(player, hl)
         end
 
         hl.Cooldown = hl.CurrentWeapon.SecondaryFire.Fire.Cooldown
-        DeductPlayerAmmo(hl, hl.CurrentWeapon.SecondaryFire)
 
         if RunFireHooks(player, hl, HL.Hooks.OnSecondaryUse) then
             return 
@@ -208,6 +206,7 @@ local function HandleSecondaryFire(player, hl)
         HL.FireWeapon(player, hl.CurrentWeapon, hl.CurrentWeapon.SecondaryFire)
         HL.PlayFireSound(player.mo, hl.CurrentWeapon.SecondaryFire.Fire)
         HL.SetAnimation(player, HL.AnimationType.Secondary)
+        DeductPlayerAmmo(hl, hl.CurrentWeapon.SecondaryFire)
     end
 end
 

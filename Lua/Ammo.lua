@@ -1,6 +1,6 @@
 ---@class hl hlplayer_t
 function HL.AddAmmo(hl, ammo_type, ammo)
-    hl.Inventory.Ammo[ammo_type] = max( min(HL.AmmoInfo[ammo_type].Maximum, $ + ammo), 0 )
+    hl.Inventory.Ammo[ammo_type] = max( min(HL.AmmoInfo[ammo_type].Maximum, ($ or 0) + ammo), 0 )
 end
 
 HL.AmmunitionType = {
@@ -31,7 +31,7 @@ HL.AmmunitionType = {
         SatchelCharge   = 8,
         TripMine        = 9,
         Snark           = 10,
-        MP5Grenade      = 11
+        MP5Grenade      = 11 
     }
 }
 

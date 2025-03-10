@@ -5,12 +5,15 @@ addHook("HUD", function(drawer, player, camera)
         hud.enable("score")
         hud.enable("time")
         hud.enable("rings")
+        hud.enable("weaponrings")
         return
     end
 
     hud.disable("score")
     hud.disable("time")
     hud.disable("rings")
+    hud.disable("weaponrings")
+
     ---@class hlplayer_t
     local hl = player.HL
     local flags = V_SNAPTOTOP | V_SNAPTOLEFT | V_40TRANS
@@ -27,16 +30,10 @@ addHook("HUD", function(drawer, player, camera)
         end
     end
 
-    if not hl.WeaponPalette then
+    if not hl.WeaponPalette or not hl.WeaponPalette.Open then
         return
     end
 
-    if not hl.WeaponPalette.Open then
-        return
-    end
-
-
-    -- Draw boxes from 1-n detailing weapon classes
     for i = 1, #hl.Inventory.Weapons do
         local x_offset = (i - 1) * 22 + 2
         local y_offset = 2
@@ -84,7 +81,7 @@ addHook("HL_FreemanThinker", function(player)
             repeat
                 if hl.WeaponPalette.Class > #hl.Inventory.Weapons then
                     hl.WeaponPalette.Class = 1
-                    
+
                     return
                 end
 
