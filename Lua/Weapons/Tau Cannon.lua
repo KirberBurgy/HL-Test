@@ -1,15 +1,46 @@
 freeslot("MT_TAUPROJECTILE")
 
+freeslot("SPR_TAUP")
 freeslot("S_TAU_PROJECTILE")
 
-freeslot("SPR_TAUP")
-
 freeslot("sfx_taudsc")
+
+states[S_TAU_PROJECTILE] = {
+    tics = -1,
+    sprite = SPR_TAUP,
+    frame = A | FF_PAPERSPRITE,
+    nextstate = S_NULL
+}
+
+mobjinfo[MT_TAUPROJECTILE] = {
+    spawnstate = S_TAU_PROJECTILE,
+    spawnhealth = 1,
+    radius = FU,
+    height = FU,
+    flags = MF_MISSILE | MF_PAPERCOLLISION,
+}
 
 HL.AnimationType["Tau Cannon"] = {
     SpinUp = HL.CreateAnimationType(),
     Spin   = HL.CreateAnimationType()
 }
+
+---@param player player_t
+HL.AnimationMap[HL.AnimationType["Tau Cannon"].SpinUp] = function(player)
+    if not (player.cmd.buttons & BT_FIRENORMAL) then
+        return HL.AnimationType.Idle
+    end
+
+    return HL.AnimationType["Tau Cannon"].Spin
+end
+
+HL.AnimationMap[HL.AnimationType["Tau Cannon"].Spin] = function(player)
+    if not (player.cmd.buttons & BT_FIRENORMAL) then
+        return HL.AnimationType.Idle
+    end
+
+    return HL.AnimationType["Tau Cannon"].Spin
+end
 
 ---@class hlweapon_t
 HL["Tau Cannon"] = {
@@ -31,7 +62,7 @@ HL["Tau Cannon"] = {
 
             Projectile = {
                 Object = MT_TAUPROJECTILE,
-                Speed = 100 * FU,
+                Speed = 300 * FU,
                 Gravity = false,
                 Homing = false
             }
@@ -65,23 +96,6 @@ HL.Viewmodels[HL["Tau Cannon"].Name] = {
 }
 
 ---@param player player_t
-HL.AnimationMap[HL.AnimationType["Tau Cannon"].SpinUp] = function(player)
-    if not (player.cmd.buttons & BT_FIRENORMAL) then
-        return HL.AnimationType.Idle
-    end
-
-    return HL.AnimationType["Tau Cannon"].Spin
-end
-
-HL.AnimationMap[HL.AnimationType["Tau Cannon"].Spin] = function(player)
-    if not (player.cmd.buttons & BT_FIRENORMAL) then
-        return HL.AnimationType.Idle
-    end
-
-    return HL.AnimationType["Tau Cannon"].Spin
-end
-
----@param player player_t
 ---@param weapon hlweapon_t
 addHook("HL_OnPrimaryUse", function(player, weapon)
     if player.HL.ViewmodelData.State == HL.AnimationType["Tau Cannon"].SpinUp then
@@ -99,14 +113,16 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
         HL.FireProjectileWeapon(player, weapon, weapon.PrimaryFire)
         HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
         HL.SetAnimation(player, HL.AnimationType.Secondary)
+        
+        local force = 80 * multiplier
 
         local yaw = player.mo.angle
         local pitch = player.aiming
-        
-        player.mo.momx = $ + FixedMul(80 * multiplier, FixedMul(cos(yaw), cos(pitch)))
-        player.mo.momy = $ + FixedMul(80 * multiplier, FixedMul(cos(yaw), sin(pitch)))
-        P_SetObjectMomZ(player.mo, FixedMul(80 * multiplier, sin(pitch)), true)
 
+        player.mo.momx = $ - FixedMul( force, FixedMul( cos(yaw), cos(pitch) ) )
+        player.mo.momy = $ - FixedMul( force, FixedMul( sin(yaw), cos(pitch) ) )
+        player.mo.momz = $ - FixedMul( force / 2, sin(pitch) )
+    
         player.HL.Cooldown = 3 * TICRATE / 2
 
         -- Reset the weapon damage after firing.
@@ -138,7 +154,7 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
 
     weapon.SpinTime = $ + 1
 
-    if weapon.SpinTime % 10 == 0 and weapon.SpinTime <= (13 * 10) and hl.Inventory.Ammo[HL.AmmunitionType.Uranium] > 0 then
+    if weapon.SpinTime % 10 == 0 and weapon.SpinTime <= (13 * 10) and hl.Inventory.Ammo[HL.AmmunitionType.Uranium] > 1 then
         weapon.AmmoUsed = weapon.AmmoUsed + 1
         hl.Inventory.Ammo[HL.AmmunitionType.Uranium] = hl.Inventory.Ammo[HL.AmmunitionType.Uranium] - 1
     end 
