@@ -1,7 +1,7 @@
-freeslot("MT_TAUPROJECTILE")
+freeslot("MT_TAUPROJECTILE", "MT_HLCORONA")
 
-freeslot("SPR_TAUP")
-freeslot("S_TAU_PROJECTILE")
+freeslot("SPR_TAUP", "SPR_HLCR")
+freeslot("S_TAU_PROJECTILE", "S_HL_CORONA")
 
 freeslot("sfx_taudsc")
 
@@ -12,12 +12,27 @@ states[S_TAU_PROJECTILE] = {
     nextstate = S_NULL
 }
 
+states[S_HL_CORONA] = {
+    tics = -1,
+    sprite = SPR_HLCR,
+    frame = A | FF_PAPERSPRITE | FF_ADD,
+    nextstate = S_NULL
+}
+
 mobjinfo[MT_TAUPROJECTILE] = {
     spawnstate = S_TAU_PROJECTILE,
     spawnhealth = 1,
-    radius = FU,
-    height = FU,
+    radius = 5 * FU,
+    height = 5 * FU,
     flags = MF_MISSILE | MF_PAPERCOLLISION,
+}
+
+mobjinfo[MT_HLCORONA] = {
+    spawnstate = S_HL_CORONA,
+    spawnhealth = 10000,
+    radius = 48 * FU,
+    height = 48 * FU,
+    flags = MF_NOGRAVITY
 }
 
 HL.AnimationType["Tau Cannon"] = {
@@ -62,7 +77,7 @@ HL["Tau Cannon"] = {
 
             Projectile = {
                 Object = MT_TAUPROJECTILE,
-                Speed = 300 * FU,
+                Speed = 200 * FU,
                 Gravity = false,
                 Homing = false
             }
@@ -165,3 +180,31 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
 
     return true
 end, HL["Tau Cannon"].Name)
+
+---@param player player_t
+---@param projectile mobj_t
+---@param line line_t
+addHook("HL_OnWeaponLineHit", function(player, projectile, line)
+    -- atan2(-dx, dy)
+---@diagnostic disable-next-line: param-type-mismatch
+    local perpendicular_angle = R_PointToAngle2(line.v1.x, line.v1.y, line.v2.x, line.v2.y)
+    local lx, ly = P_ClosestPointOnLine(projectile.x, projectile.y, line)
+
+    local spot = P_SpawnMobj(lx, ly, projectile.z, MT_HLCORONA)
+    spot.color = SKINCOLOR_ORANGE
+    spot.fuse = 8 * TICRATE
+    spot.angle = perpendicular_angle
+end, HL["Tau Cannon"].Name)
+
+---@param corona mobj_t
+addHook("MobjThinker", function(corona)
+    if not (corona and corona.valid) then
+        return
+    end
+
+    if corona.fuse % 14 == 0 then
+        local transparency = FF_TRANS10 * (corona.fuse / 14)
+
+        corona.frame = A | FF_PAPERSPRITE | FF_ADD | transparency
+    end
+end, MT_HLCORONA)

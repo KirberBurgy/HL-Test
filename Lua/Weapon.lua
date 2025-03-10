@@ -102,10 +102,10 @@ function HL.FireProjectileWeapon(player, weapon, fire_mode)
     local bullet = P_SpawnMobjFromMobj(player.mo, 0, 0, player.mo.height / 2, fire_mode.Fire.Projectile.Object)
 
     bullet.target = player.mo
-    
+
     bullet.flags = $ | (not fire_mode.Fire.Projectile.Gravity and MF_NOGRAVITY or 0)
     bullet.angle = player.mo.angle
-    bullet.pitch = player.aiming
+    bullet.rollangle = player.aiming
 
     bullet.HL = {
         IsHitscan = false,
