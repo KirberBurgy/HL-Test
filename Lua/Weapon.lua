@@ -8,8 +8,6 @@ mobjinfo[MT_HLBULLET] = {
     radius = FU / 3
 }
 
-HL.Weapons = {}
-
 HL.WeaponClass = {
     -- Crowbar
     Melee           = 1,

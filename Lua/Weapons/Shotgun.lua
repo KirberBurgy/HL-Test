@@ -21,7 +21,7 @@ HL.Weapons.Shotgun = {
             Automatic = false,
             Damage = 5 * FU,
             DamageVariance = FU,
-            Spread = 2 * FU,
+            Spread = 3 * FU,
             RequiredAmmo = 1,
             FireSound = {
                 sfx_shgsh1
@@ -35,7 +35,7 @@ HL.Weapons.Shotgun = {
             Automatic = false,
             Damage = 5 * FU,
             DamageVariance = FU,
-            Spread = 2 * FU,
+            Spread = 3 * FU,
             RequiredAmmo = 2,
             FireSound = {
                 sfx_shgsh2

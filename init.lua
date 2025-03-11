@@ -91,6 +91,8 @@ HL.Hooks = {
     OnPickupGained      = {}
 }
 
+HL.Weapons = {}
+
 ---@alias hlhooktype hooktype 
 ---| "AddonLoaded"
 ---| "HL_FreemanThinker"
@@ -168,6 +170,10 @@ HL.RegisterPickup(MT_RAILPICKUP)
 
 HL.RegisterPickup(MT_SCATTERRING)
 HL.RegisterPickup(MT_SCATTERPICKUP)
+
+addHook("HL_OnWeaponLineHit", function(player, projectile, line)
+    P_SpawnMobjFromMobj(projectile, 0, 0, 0, MT_RING)
+end, HL.Weapons.Shotgun.Name)
 
 addHook("HL_OnPickupGained", function(player)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Bullet, 17 * 3)
