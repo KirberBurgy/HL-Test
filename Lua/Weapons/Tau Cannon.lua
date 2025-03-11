@@ -3,7 +3,7 @@ freeslot("MT_TAUPROJECTILE", "MT_HLCORONA")
 freeslot("SPR_TAUP", "SPR_HLCR")
 freeslot("S_TAU_PROJECTILE", "S_HL_CORONA")
 
-freeslot("sfx_taudsc")
+freeslot("sfx_taudsc", "sfx_tauwd1", "sfx_tauwd2", "sfx_tauwd3")
 
 states[S_TAU_PROJECTILE] = {
     tics = -1,
@@ -32,7 +32,7 @@ mobjinfo[MT_HLCORONA] = {
     spawnhealth = 10000,
     radius = 48 * FU,
     height = 48 * FU,
-    flags = MF_NOGRAVITY
+    flags = MF_NOGRAVITY | MF_NOCLIPHEIGHT | MF_NOCLIP
 }
 
 HL.AnimationType["Tau Cannon"] = {
@@ -58,7 +58,7 @@ HL.AnimationMap[HL.AnimationType["Tau Cannon"].Spin] = function(player)
 end
 
 ---@class hlweapon_t
-HL["Tau Cannon"] = {
+HL.Weapons["Tau Cannon"] = {
     Name = "Tau Cannon",
     Class = HL.WeaponClass.Experimental,
     PrimaryFire = {
@@ -69,7 +69,7 @@ HL["Tau Cannon"] = {
             Automatic = true,
             Damage = FU * 20,
             DamageVariance = 0,
-            Spread = FU / 5,
+            Spread = 0,
             RequiredAmmo = 2,
             FireSound = {
                 sfx_taudsc
@@ -91,13 +91,13 @@ HL["Tau Cannon"] = {
             Automatic = true,
             Damage = FU * 25,
             DamageVariance = 0,
-            Spread = FU / 5,
+            Spread = 0,
             RequiredAmmo = 1,
         }
     }
 }
 
-HL.Viewmodels[HL["Tau Cannon"].Name] = {
+HL.Viewmodels[HL.Weapons["Tau Cannon"].Name] = {
     Flags = V_FLIP,
     OffsetX = 352 * FU,
     OffsetY = 0 * FU,
@@ -106,8 +106,18 @@ HL.Viewmodels[HL["Tau Cannon"].Name] = {
     [HL.AnimationType.Idle] = HL.NewWeaponAnimation("TAU_IDLE1-", 61, { [1] = 3 }),
     [HL.AnimationType.Primary] = HL.NewWeaponAnimation("TAU_FIRE", 31, { [1] = 1 }),
     [HL.AnimationType.Secondary] = HL.NewWeaponAnimation("TAU_SFIRE", 41, { [1] = 1 }),
-    [HL.AnimationType["Tau Cannon"].SpinUp] = HL.NewWeaponAnimation("TAU_SPINUP", 31, { [1] = 1 }),
-    [HL.AnimationType["Tau Cannon"].Spin] = HL.NewWeaponAnimation("TAU_SPIN", 16, { [1] = 1 })
+
+    [HL.AnimationType["Tau Cannon"].SpinUp] = HL.NewWeaponAnimation("TAU_SPINUP", 31, { 
+        [1] = 1 
+    }, { 
+        [10] = sfx_tauwd1 
+    }),
+
+    [HL.AnimationType["Tau Cannon"].Spin] = HL.NewWeaponAnimation("TAU_SPIN", 16, { 
+        [1] = 1 
+    }, { 
+        [8] = { sfx_tauwd2, sfx_tauwd3 } 
+    })
 }
 
 ---@param player player_t
@@ -144,7 +154,7 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
         weapon.PrimaryFire.Fire.Damage = FRACUNIT * 20
         return true
     end
-end, HL["Tau Cannon"].Name)
+end, HL.Weapons["Tau Cannon"].Name)
 
 ---@param player player_t
 ---@param weapon hlweapon_t
@@ -169,7 +179,7 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
 
     weapon.SpinTime = $ + 1
 
-    if weapon.SpinTime % 10 == 0 and weapon.SpinTime <= (13 * 10) and hl.Inventory.Ammo[HL.AmmunitionType.Uranium] > 1 then
+    if weapon.SpinTime % 10 == 0 and weapon.SpinTime <= (13 * 10) and hl.Inventory.Ammo[HL.AmmunitionType.Uranium] > 2 then
         weapon.AmmoUsed = weapon.AmmoUsed + 1
         hl.Inventory.Ammo[HL.AmmunitionType.Uranium] = hl.Inventory.Ammo[HL.AmmunitionType.Uranium] - 1
     end 
@@ -179,7 +189,7 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
     end
 
     return true
-end, HL["Tau Cannon"].Name)
+end, HL.Weapons["Tau Cannon"].Name)
 
 ---@param player player_t
 ---@param projectile mobj_t
@@ -192,9 +202,9 @@ addHook("HL_OnWeaponLineHit", function(player, projectile, line)
 
     local spot = P_SpawnMobj(lx, ly, projectile.z, MT_HLCORONA)
     spot.color = SKINCOLOR_ORANGE
-    spot.fuse = 8 * TICRATE
+    spot.fuse = 4 * TICRATE
     spot.angle = perpendicular_angle
-end, HL["Tau Cannon"].Name)
+end, HL.Weapons["Tau Cannon"].Name)
 
 ---@param corona mobj_t
 addHook("MobjThinker", function(corona)
@@ -203,7 +213,7 @@ addHook("MobjThinker", function(corona)
     end
 
     if corona.fuse % 14 == 0 then
-        local transparency = FF_TRANS10 * (corona.fuse / 14)
+        local transparency = FF_TRANS10 * (13 - corona.fuse / 14)
 
         corona.frame = A | FF_PAPERSPRITE | FF_ADD | transparency
     end

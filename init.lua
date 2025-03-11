@@ -122,7 +122,6 @@ rawset(_G, "addHook", function(hook, func, ext)
     _addHook(hook, func, ext)
 end)
 
-
 ---@param mo mobj_t
 ---@return boolean
 rawset(_G, "P_ObjectIsValid", function(mo)
@@ -172,7 +171,7 @@ HL.RegisterPickup(MT_SCATTERPICKUP)
 
 addHook("HL_OnPickupGained", function(player)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Bullet, 17 * 3)
-    HL.GiveWeapon(player, HL.Pistol)
+    HL.GiveWeapon(player, HL.Weapons.Pistol)
 end, MT_INFINITYRING)
 
 addHook("HL_OnPickupGained", function(player)
@@ -192,5 +191,5 @@ end, MT_SCATTERRING)
 addHook("HL_OnPickupGained", function(player)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Shell, 16)
 
-    HL.GiveWeapon(player, HL.Shotgun)
+    HL.GiveWeapon(player, HL.Weapons.Shotgun)
 end, MT_SCATTERPICKUP)

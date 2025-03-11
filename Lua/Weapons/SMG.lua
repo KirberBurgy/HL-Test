@@ -5,7 +5,7 @@ freeslot("sfx_smgsh3")
 HL.AmmunitionType.Unique.MP5Grenade = 11
 
 ---@class hlweapon_t
-HL.SMG = {
+HL.Weapons.SMG = {
     Name = "Submachine Gun",
     Class = HL.WeaponClass.Primary,
 

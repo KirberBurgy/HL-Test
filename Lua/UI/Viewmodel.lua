@@ -29,6 +29,10 @@ addHook("HL_FreemanThinker", function(player)
 
     hl.ViewmodelData.Clock = $ + 1
         
+    if animation.Sounds[hl.ViewmodelData.Progress] then
+        HL.PlayRandomSound(player.mo, animation.Sounds[hl.ViewmodelData.Progress])
+    end
+    
     if hl.ViewmodelData.Clock >= animation.Durations[hl.ViewmodelData.Progress] then
         hl.ViewmodelData.Progress = $ + 1
         hl.ViewmodelData.Clock = 1

@@ -1,7 +1,5 @@
 freeslot("MT_HLBULLET")
 
-freeslot("sfx_9mmsh1")
-
 mobjinfo[MT_HLBULLET] = {
     spawnstate = S_INVISIBLE,
     spawnhealth = 1,
@@ -9,6 +7,8 @@ mobjinfo[MT_HLBULLET] = {
     height = FU / 3,
     radius = FU / 3
 }
+
+HL.Weapons = {}
 
 HL.WeaponClass = {
     -- Crowbar

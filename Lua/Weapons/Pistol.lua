@@ -1,5 +1,7 @@
+freeslot("sfx_9mmsh1")
+
 ---@class hlweapon_t
-HL.Pistol = {
+HL.Weapons.Pistol = {
     Name = "9mm Pistol",
     Class = HL.WeaponClass.Handgun,
     PrimaryFire = {
@@ -39,7 +41,7 @@ HL.Pistol = {
     }
 }
 
-HL.Viewmodels[HL.Pistol.Name] = {
+HL.Viewmodels[HL.Weapons.Pistol.Name] = {
     Flags = V_FLIP,
     OffsetX = 160 * FU,
     OffsetY = 106 * FU,

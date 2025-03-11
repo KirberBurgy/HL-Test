@@ -59,11 +59,7 @@ COM_AddCommand("giveweapon", function(player, arg1)
 
     local valid_name = false
 
-    for name, weapon in pairs(HL) do
-        if not (weapon and type(weapon) == "table" and weapon.Name and weapon.Class and weapon.PrimaryFire) then
-            continue
-        end
-
+    for name, _ in pairs(HL.Weapons) do
         if not arg1 then
             CONS_Printf(player, "\t" .. name)
             
@@ -83,7 +79,7 @@ COM_AddCommand("giveweapon", function(player, arg1)
         return
     end
 
-    HL.GiveWeapon(player, HL[arg1])
+    HL.GiveWeapon(player, HL.Weapons[arg1])
 end)
 
 local function NewPlayerAmmo()

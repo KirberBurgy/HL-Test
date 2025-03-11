@@ -101,8 +101,14 @@ HL.AmmoInfo = {
 ---@field Projectile hlproj_t? The projectile fired by the weapon. If nil, then the weapon is a hitscan weapon.
 
 ---@param player_mo mobj_t
-local function HL_PlayRandomSound(player_mo, sound_table)
+function HL.PlayRandomSound(player_mo, sound_table)
     if not sound_table then
+        return
+    end
+
+    if type(sound_table) == "number" then
+        S_StartSound(player_mo, sound_table)
+
         return
     end
 
@@ -118,17 +124,17 @@ end
 ---@param player_mo mobj_t
 ---@param fire hlfire_t
 function HL.PlayFireSound(player_mo, fire)
-    HL_PlayRandomSound(player_mo, fire.FireSound)
+    HL.PlayRandomSound(player_mo, fire.FireSound)
 end
 
 ---@param player_mo mobj_t
 ---@param fire hlfire_t
 function HL.PlayHitWallSound(player_mo, fire)
-    HL_PlayRandomSound(player_mo, fire.HitWallSound)
+    HL.PlayRandomSound(player_mo, fire.HitWallSound)
 end
 
 ---@param player_mo mobj_t
 ---@param fire hlfire_t
 function HL.PlayHitEnemySound(player_mo, fire)
-    HL_PlayRandomSound(player_mo, fire.HitEnemySound)
+    HL.PlayRandomSound(player_mo, fire.HitEnemySound)
 end

@@ -1,7 +1,7 @@
-freeslot("sfx_shgsh1")
+freeslot("sfx_shgsh1", "sfx_shgsh2", "sfx_shgcck", "sfx_shgrld")
 
 ---@class hlweapon_t
-HL.Shotgun = {
+HL.Weapons.Shotgun = {
     Name = "Shotgun",
     Class = HL.WeaponClass.Primary,
 
@@ -36,37 +36,26 @@ HL.Shotgun = {
             Damage = 5 * FU,
             DamageVariance = FU,
             Spread = 2 * FU,
-            RequiredAmmo = 2
+            RequiredAmmo = 2,
+            FireSound = {
+                sfx_shgsh2
+            }
         }
     }
 }
 
-HL.Viewmodels[HL.Shotgun.Name] = {
+HL.Viewmodels[HL.Weapons.Shotgun.Name] = {
     Flags = V_FLIP,
-    OffsetX = 160 * FU,
-    OffsetY = 106 * FU,
+    OffsetX = 352 * FU,
+    OffsetY = 0,
 
-    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SHOTGUNREADY", 5, { [1] = 8 }),
-    [HL.AnimationType.Idle] = HL.NewWeaponAnimation("SHOTGUNIDLE1-", 10, { [1] = 8 }),
-    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SHOTGUNFIRE", 16, { [1] = 2, [5] = 4 }),
-    [HL.AnimationType.Secondary] = HL.NewWeaponAnimation("SHOTGUNAFIRE", 19, {
-        [1] = 5,
-        [7] = 3,
-        [17] = 3,
-        [20] = 6,
-    }),
-
-    [HL.AnimationType.ReloadStart] = HL.NewWeaponAnimation("SHOTGUNRELOADS", 7, {
-        [1] = 5
-    }),
-    
-    [HL.AnimationType.ReloadLoop] = HL.NewWeaponAnimation("SHOTGUNRELOADL", 6, {
-        [1] = 5
-    }),
-    
-    [HL.AnimationType.ReloadEnd] = HL.NewWeaponAnimation("SHOTGUNRELOADE", 8, {
-        [1] = 5
-    }),
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SHOTGUN_READY", 12, { [1] = 3 }),
+    [HL.AnimationType.Idle] = HL.NewWeaponAnimation("SHOTGUN_IDLE1-", 20, { [1] = 3 }),
+    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SHOTGUN_FIRE", 31, { [1] = 1 }, { [16] = sfx_shgcck }),
+    [HL.AnimationType.Secondary] = HL.NewWeaponAnimation("SHOTGUN_SFIRE", 47, { [1] = 1 }, { [31] = sfx_shgcck }),
+    [HL.AnimationType.ReloadStart] = HL.NewWeaponAnimation("SHOTGUN_RELOADSTART", 8, { [1] = 3 }),
+    [HL.AnimationType.ReloadLoop] = HL.NewWeaponAnimation("SHOTGUN_RELOADLOOP", 9, { [1] = 3 }, { [4] = sfx_shgrld }),
+    [HL.AnimationType.ReloadEnd] = HL.NewWeaponAnimation("SHOTGUN_RELOADEND", 19, { [1] = 3 }, { [5] = sfx_shgcck }),
 }
 
 ---@param player player_t
@@ -79,11 +68,13 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
         HL.FireHitscanWeapon(player, weapon, weapon.PrimaryFire)
     end
 
+    weapon.PrimaryFire.Reload.CurrentClip = $ - 1
+
     HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
     HL.SetAnimation(player, HL.AnimationType.Primary)
 
     return true
-end, HL.Shotgun.Name)
+end, HL.Weapons.Shotgun.Name)
 
 ---@param player player_t
 ---@param weapon hlweapon_t
@@ -92,9 +83,10 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
         HL.FireHitscanWeapon(player, weapon, weapon.PrimaryFire)
     end
 
-    HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
-    HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
+    weapon.PrimaryFire.Reload.CurrentClip = $ - 2
 
+    HL.PlayFireSound(player.mo, weapon.SecondaryFire.Fire)
     HL.SetAnimation(player, HL.AnimationType.Secondary)
+
     return true
-end, HL.Shotgun.Name)
+end, HL.Weapons.Shotgun.Name)

@@ -127,6 +127,7 @@ end
 ---@field Sentinel string The name of the first frame. Following frames should come in a succession.
 ---@field Length integer The number of frames in the animation.
 ---@field Durations tic_t[] The duration, in tics, of each frame.
+---@field Sounds integer[] The sounds played at each frame.
 
 local function KeywiseSort(t) 
     local sorted_keys = {} 
@@ -141,13 +142,15 @@ end
 ---@param sentinel string
 ---@param frame_count integer
 ---@param durations tic_t[]
+---@param sounds? integer[]|table[]
 ---@return hlweaponanim_t
-function HL.NewWeaponAnimation(sentinel, frame_count, durations)
+function HL.NewWeaponAnimation(sentinel, frame_count, durations, sounds)
     ---@class hlweaponanim_t
     local animation = {
         Sentinel = sentinel,
         Length = frame_count,
-        Durations = {}
+        Durations = {},
+        Sounds = sounds or {}
     }
 
     local sorted_keys = KeywiseSort(durations)

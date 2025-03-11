@@ -1,7 +1,7 @@
 freeslot("MT_HLMELEESENTINEL")
 
 ---@class hlweapon_t
-HL.Crowbar = {
+HL.Weapons.Crowbar = {
     Name = "Crowbar",
     Class = HL.WeaponClass.Melee,
     PrimaryFire = {
