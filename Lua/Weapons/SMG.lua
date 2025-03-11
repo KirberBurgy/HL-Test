@@ -1,6 +1,5 @@
-freeslot("sfx_smgsh1")
-freeslot("sfx_smgsh2")
-freeslot("sfx_smgsh3")
+freeslot("sfx_smgsh1", "sfx_smgsh2", "sfx_smgsh3")
+freeslot("sfx_smggr1", "sfx_smggr2")
 
 HL.AmmunitionType.Unique.MP5Grenade = 11
 
@@ -10,15 +9,20 @@ HL.Weapons.SMG = {
     Class = HL.WeaponClass.Primary,
 
     PrimaryFire = {
-        ClipSize = 50,
-        CurrentClipSize = 0,
         AmmoType = HL.AmmunitionType.Bullet,
+
+        Reload = {
+            ClipSize = 50,
+            CurrentClip = 0,
+            ReloadDelay = 70
+        },
+
         Fire = {
             Cooldown = 4,
             Automatic = true,
-            Damage = 40 * FU,
-            DamageVariance = FU * 5,
-            Spread = FU * 2,
+            Damage = 5 * FU,
+            DamageVariance = FU / 2,
+            Spread = FU,
             RequiredAmmo = 1,
             FireSound = {
                 sfx_smgsh1,
@@ -28,15 +32,31 @@ HL.Weapons.SMG = {
         }
     },
     SecondaryFire = {
-        ClipSize = HL.DoesNotReload,
         AmmoType = HL.AmmunitionType.Unique.MP5Grenade,
+
         Fire = {
             Cooldown = TICRATE,
             Automatic = false,
-            Damage = 80 * FU,
+            Damage = 100 * FU,
             DamageVariance = FU * 20,
             Spread = 0,
-            RequiredAmmo = 1
+            RequiredAmmo = 1,
+            FireSound = {
+                sfx_smggr1,
+                sfx_smggr2
+            }
         }
     }
+}
+
+HL.Viewmodels[HL.Weapons.SMG.Name] = {
+    Flags = V_FLIP,
+    OffsetX = 352 * FU,
+    OffsetY = 0,
+
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("SMG_READY", 11, { [1] = 1 }),
+    [HL.AnimationType.Idle] = HL.NewWeaponAnimation("SMG_IDLE", 40, { [1] = 3 }),
+    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("SMG_FIRE", 6, { [1] = 1 }),
+    [HL.AnimationType.Secondary] = HL.NewWeaponAnimation("SMG_SFIRE", 33, { [1] = 1 }),
+    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("SMG_RELOAD", 46, { [1] = 1 })
 }

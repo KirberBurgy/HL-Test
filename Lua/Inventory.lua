@@ -126,10 +126,13 @@ function HL.GiveWeapon(player, weapon_prototype)
         end
     end
 
+    ---@class hlweapon_t
     local weapon = RecursiveClone(weapon_prototype)
 
     table.insert( hl.Inventory.Weapons[weapon_prototype.Class], weapon )
+
     hl.CurrentWeapon = weapon
+    
     HL.SetAnimation(player, HL.AnimationType.Ready)
 
     table.sort(hl.Inventory.Weapons[weapon_prototype.Class], function (a, b)

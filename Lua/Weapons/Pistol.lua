@@ -43,27 +43,29 @@ HL.Weapons.Pistol = {
 
 HL.Viewmodels[HL.Weapons.Pistol.Name] = {
     Flags = V_FLIP,
-    OffsetX = 160 * FU,
-    OffsetY = 106 * FU,
+    OffsetX = 352 * FU,
+    OffsetY = 0,
 
-    [HL.AnimationType.Ready]        = HL.NewWeaponAnimation("PISTOL_READY", 7, { [1] = 3 }),
-    [HL.AnimationType.Idle]         = HL.NewWeaponAnimation("PISTOL_IDLE", 47, {
-        [1] = 8,
-        [23] = 12,
-        [32] = 8,
-        [33] = 10
-    }),
+    [HL.AnimationType.Ready]        = HL.NewWeaponAnimation("PISTOL_READY", 15, { [1] = 1 }),
 
-    [HL.AnimationType.Primary]      = HL.NewWeaponAnimation("PISTOL_FIRE", 9, {
-        [1] = 2
-    }),
+    [HL.AnimationType.Idle]         = HL.NewWeaponAnimation("PISTOL_IDLE1-", 40, { [1] = 7 }),
 
-    [HL.AnimationType.Secondary]    = HL.NewWeaponAnimation("PISTOL_SFIRE", 10, {
+    [HL.AnimationType.Primary]      = HL.NewWeaponAnimation("PISTOL_FIRE", 19, {
         [1] = 1,
-        [2] = 2
+        [5] = 2,
+        [6] = 1,
+        [10] = 2,
+        [11] = 1,
+        [15] = 2,
+        [16] = 1
     }),
 
-    [HL.AnimationType.Reload]       = HL.NewWeaponAnimation("PISTOL_RELOAD", 12, {
-        [1] = 6
+    [HL.AnimationType.Secondary]    = HL.NewWeaponAnimation("PISTOL_FIRE", 19, {
+        [1] = 1
+    }),
+
+    -- Don't drink this code. They put something in it, to make you forget.
+    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("PISTOL_RELOAD", 41, {
+        [1] = 2
     })
 }
