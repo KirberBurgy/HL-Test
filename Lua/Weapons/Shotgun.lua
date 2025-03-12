@@ -12,7 +12,7 @@ HL.Weapons.Shotgun = {
         Reload = {
             ClipSize = 8,
             CurrentClip = 0,
-            ReloadDelay = 15,
+            ReloadDelay = 18,
             OneByOne = true
         },
 

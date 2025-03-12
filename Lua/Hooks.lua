@@ -249,8 +249,21 @@ addHook("HL_FreemanThinker", function(player)
     HandleSecondaryFire(player, hl)
 
     if hl.Cooldown > 0 then
+
         hl.Cooldown = $ - 1
-    elseif hl.Reloading then
+
+        if hl.CurrentWeapon.PrimaryFire.Reload
+        and hl.Reloading
+        and hl.CurrentWeapon.PrimaryFire.Reload.OneByOne
+        and hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip > 1
+        and player.cmd.buttons & BT_ATTACK then
+            hl.Reloading = false
+            hl.Cooldown = hl.CurrentWeapon.PrimaryFire.Reload.ReloadDelay
+            HL.SetAnimation(player, HL.AnimationType.ReloadEnd)
+        end
+    end
+
+    if hl.Reloading and hl.Cooldown == 0 then
         if hl.CurrentWeapon.PrimaryFire.Reload.OneByOne then 
             hl.CurrentWeapon.PrimaryFire.Reload.CurrentClip = $ + 1
             hl.Inventory.Ammo[hl.CurrentWeapon.PrimaryFire.AmmoType] = $ - 1
