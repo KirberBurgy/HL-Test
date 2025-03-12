@@ -156,6 +156,7 @@ dofile("Weapons/Crowbar.lua")
 dofile("Inventory.lua")
 dofile("Hooks.lua")
 dofile("Pickup.lua")
+dofile("Damage.lua")
 
 dofile("UI/Viewmodel.lua")
 dofile("UI/HUD.lua")
