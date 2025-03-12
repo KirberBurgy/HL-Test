@@ -84,12 +84,12 @@ end)
 
 local function NewPlayerAmmo()
     return {
-        [HL.AmmunitionType.Bullet] = 34,
+        [HL.AmmunitionType.Bullet] = 250,
         [HL.AmmunitionType.Cartridge] = 0,
-        [HL.AmmunitionType.Shell] = 0,
+        [HL.AmmunitionType.Shell] = 125,
         [HL.AmmunitionType.Bolt] = 0,
         [HL.AmmunitionType.Rocket] = 0,
-        [HL.AmmunitionType.Uranium] = 0,
+        [HL.AmmunitionType.Uranium] = 100,
         [HL.AmmunitionType.Unique.FragGrenade] = 0,
         [HL.AmmunitionType.Unique.SatchelCharge] = 0,
         [HL.AmmunitionType.Unique.TripMine] = 0,
@@ -100,15 +100,17 @@ end
 local function NewPlayerWeapons()
     return {
         [HL.WeaponClass.Melee]   = { 
-
+            RecursiveClone(HL.Weapons.Crowbar)
         },
         [HL.WeaponClass.Handgun] = { 
-
+            RecursiveClone(HL.Weapons.Pistol)
         },
         [HL.WeaponClass.Primary] = {
-
+            RecursiveClone(HL.Weapons.Shotgun),
+            RecursiveClone(HL.Weapons.SMG)
         },
         [HL.WeaponClass.Experimental] = {
+            RecursiveClone(HL.Weapons["Tau Cannon"])
         }
     }
 end
@@ -157,6 +159,8 @@ addHook("HL_FreemanThinker", function(player)
             CurrentWeapon = nil
         }
 
+        player.HL.CurrentWeapon = player.HL.Inventory.Weapons[HL.WeaponClass.Melee][1]
+        HL.SetAnimation(player, HL.AnimationType.Ready)
     end
     
     player.weapondelay = INT32_MAX
