@@ -115,21 +115,6 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
     return true
 end, HL.Weapons.Crowbar.Name)
 
----@param player player_t
-local function CrowbarSetAnimation(player)
-    ---@class hlplayer_t
-
-    -- stupid fucking hack,
-    -- if you're reading this don't do this
-    local hl = player.HL
-
-    local anim_number = hl.ViewmodelData.Animation.Sentinel:match("CROWBAR_MISS(%d+)-")
-
-    if anim_number then
-        hl.ViewmodelData.Animation = HL.Viewmodels[HL.Weapons.Pistol.Name][HL.AnimationType.Crowbar.Hit][anim_number]
-    end
-end
-
 addHook("HL_OnProjectileHit", function(player, projectile, target)
     if not (target.flags & MF_ENEMY) then
         return
