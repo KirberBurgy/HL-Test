@@ -2,7 +2,7 @@ freeslot("sfx_357sh1")
 freeslot("sfx_357sh2")
 
 ---@class hlweapon_t
-HL.Magnum = {
+HL.Weapons.Magnum = {
     Name = ".357 Magnum",
     Class = HL.WeaponClass.Handgun,
 
@@ -12,7 +12,7 @@ HL.Magnum = {
         Reload = {
             ClipSize = 6,
             CurrentClip = 0,
-            ReloadDelay = 85
+            ReloadDelay = 98
         },
         
         Fire = {
@@ -30,28 +30,20 @@ HL.Magnum = {
     }
 }
 
-HL.Viewmodels[HL.Magnum.Name] = {
+HL.Viewmodels[HL.Weapons.Magnum.Name] = {
     Flags = V_FLIP,
-    OffsetX = 160 * FU,
-    OffsetY = 106 * FU,
+    OffsetX = 352 * FU,
+    OffsetY = 0 * FU,
 
-    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("357READY", 7, { [1] = 3 }),
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("MAGNUM_READY", 15, { [1] = 1 }),
 
-    [HL.AnimationType.Idle] = HL.NewWeaponAnimation("357IDLE1-", 20, {
-        [1] = 6,
-        [2] = 5,
-        [19] = 5,
-    }),
+    [HL.AnimationType.Idle] = {
+        HL.NewWeaponAnimation("MAGNUM_IDLE1-", 70, { [1] = 1 }),
+        HL.NewWeaponAnimation("MAGNUM_IDLE2-", 170, { [1] = 1 }),
+        HL.NewWeaponAnimation("MAGNUM_IDLE3-", 70, { [1] = 1 }),
+        HL.NewWeaponAnimation("MAGNUM_IDLE4-", 88, { [1] = 1 })
+    },
 
-    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("357FIRE", 8, { 
-        [1] = 2,
-        [2] = 3
-    }),
-
-    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("357RELOAD", 28, {
-        [1] = 6,
-        [2] = 4,
-        [5] = 3,
-        [26] = 8
-    })
+    [HL.AnimationType.Primary] = HL.NewWeaponAnimation("MAGNUM_FIRE", 30, { [1] = 1 }),
+    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("MAGNUM_RELOAD", 110, { [1] = 1 })
 }

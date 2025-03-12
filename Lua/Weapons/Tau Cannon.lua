@@ -15,7 +15,7 @@ states[S_TAU_PROJECTILE] = {
 states[S_HL_CORONA] = {
     tics = -1,
     sprite = SPR_HLCR,
-    frame = A | FF_PAPERSPRITE | FF_ADD,
+    frame = A | FF_FLOORSPRITE | FF_ADD,
     nextstate = S_NULL
 }
 
