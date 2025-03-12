@@ -87,6 +87,7 @@ HL.AmmoInfo = {
 ---@field Object integer The object number of the projectile. The associated object should have the MF_MISSILE flag.
 ---@field Gravity boolean Whether the projectile is affected by gravity.
 ---@field Homing boolean Whether the projectile has tracking capabilities.
+---@field Fuse tic_t? The timer of the projectile, if any.
 
 ---@class hlfire_t
 ---@field Cooldown tic_t The delay between shots, in tics.

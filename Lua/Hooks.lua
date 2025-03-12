@@ -33,11 +33,17 @@ local function OnWeaponHit(projectile, hit)
         return false
     end
 
+    if not (hit.flags & (MF_ENEMY | MF_BOSS)) then
+        return
+    end
+
     local correct_hook = projectile.HL.IsHitscan and HL.Hooks.OnHitscanHit or HL.Hooks.OnProjectileHit
+
+    HL.PlayHitEnemySound(projectile, projectile.HL.SourceFire.Fire)
 
     for _, hook in ipairs(HL.Hooks.OnWeaponHit) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            hook.Callback(projectile.target.player, projectile, hit )
+            hook.Callback(projectile.target.player, projectile, hit)
         end
     end
 
@@ -58,6 +64,8 @@ local function OnWeaponLineHit(mo, _, line)
     if not mo.HL then
         return
     end
+
+    HL.PlayHitWallSound(mo, mo.HL.SourceFire.Fire)
 
     for _, hook in ipairs(HL.Hooks.OnWeaponLineHit) do
         if not hook.Extra or hook.Extra == mo.HL.SourceWeapon.Name then
@@ -95,7 +103,7 @@ end
 ---@param hl hlplayer_t
 local function PlayerHasEnoughPrimaryAmmo(hl)
     if hl.CurrentWeapon.PrimaryFire.AmmoType == HL.AmmunitionType.None then
-        return
+        return true
     end
 
     if hl.CurrentWeapon.PrimaryFire.Reload then
@@ -108,7 +116,7 @@ end
 ---@param hl hlplayer_t
 local function PlayerHasEnoughSecondaryAmmo(hl)
     if hl.CurrentWeapon.SecondaryFire.AmmoType == HL.AmmunitionType.None then
-        return
+        return true
     end
 
     if hl.CurrentWeapon.SecondaryFire.AmmoType == HL.UsesPrimaryClip then

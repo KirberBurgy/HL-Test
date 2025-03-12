@@ -76,6 +76,7 @@ function HL.FireHitscanWeapon(player, weapon, fire_mode)
         IsHitscan = true,
         Player = player,
         SourceWeapon = weapon,
+        SourceFire = fire_mode,
         Damage = fire_mode.Fire.Damage + ( P_RandomFixed() - FU / 2 ) * fire_mode.Fire.DamageVariance
     }
 
@@ -104,11 +105,13 @@ function HL.FireProjectileWeapon(player, weapon, fire_mode)
     bullet.flags = $ | (not fire_mode.Fire.Projectile.Gravity and MF_NOGRAVITY or 0)
     bullet.angle = player.mo.angle
     bullet.rollangle = player.aiming
+    bullet.fuse = (fire_mode.Fire.Projectile.Fuse or INT32_MAX)
 
     bullet.HL = {
         IsHitscan = false,
         Player = player,
         SourceWeapon = weapon,
+        SourceFire = fire_mode,
         Damage = fire_mode.Fire.Damage + ( P_RandomFixed() - FU / 2 ) * fire_mode.Fire.DamageVariance
     }
 

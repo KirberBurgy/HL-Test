@@ -21,7 +21,7 @@ addHook("HL_FreemanThinker", function(player)
     end
 
     ---@class hlweaponanim_t
-    local animation = viewmodel[hl.ViewmodelData.State]
+    local animation = hl.ViewmodelData.Animation
 
     if not animation or not animation.Durations or not animation.Durations[hl.ViewmodelData.Progress] then
         return
@@ -60,20 +60,14 @@ addHook("HUD", function(drawer, player, camera)
         return
     end
 
-    ---@class hlviewmodel_t
     local viewmodel = HL.Viewmodels[hl.CurrentWeapon.Name]
 
-    if not viewmodel then
+    if not viewmodel or not hl.ViewmodelData.Animation then
         return
     end
 
-    ---@class hlweaponanim_t
-    local animation = viewmodel[hl.ViewmodelData.State]
+    print( hl.ViewmodelData.Animation.Sentinel .. hl.ViewmodelData.Progress )
 
-    if not animation or not animation.Sentinel then
-        return
-    end
-
-    local patch = drawer.cachePatch( animation.Sentinel .. hl.ViewmodelData.Progress )
+    local patch = drawer.cachePatch( hl.ViewmodelData.Animation.Sentinel .. hl.ViewmodelData.Progress )
     drawer.drawScaled(viewmodel.OffsetX, viewmodel.OffsetY, FRACUNIT, patch, V_SNAPTOBOTTOM | viewmodel.Flags)
 end, "game")

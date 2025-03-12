@@ -146,13 +146,12 @@ dofile("Ammo.lua")
 dofile("Weapon.lua")
 dofile("Animation.lua")
 
-
-dofile("Weapons/Crowbar.lua")
 dofile("Weapons/Pistol.lua")
 dofile("Weapons/Magnum.lua")
 dofile("Weapons/Shotgun.lua")
 dofile("Weapons/SMG.lua")
 dofile("Weapons/Tau Cannon.lua")
+dofile("Weapons/Crowbar.lua")
 
 dofile("Inventory.lua")
 dofile("Hooks.lua")
@@ -170,10 +169,6 @@ HL.RegisterPickup(MT_RAILPICKUP)
 
 HL.RegisterPickup(MT_SCATTERRING)
 HL.RegisterPickup(MT_SCATTERPICKUP)
-
-addHook("HL_OnWeaponLineHit", function(player, projectile, line)
-    P_SpawnMobjFromMobj(projectile, 0, 0, 0, MT_RING)
-end, HL.Weapons.Shotgun.Name)
 
 addHook("HL_OnPickupGained", function(player)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Bullet, 17 * 3)

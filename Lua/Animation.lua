@@ -103,7 +103,9 @@ end
 
 ---@param player player_t
 ---@param animation integer
-function HL.SetAnimation(player, animation)
+---@param match boolean? Whether or not to match the index of the previous animation. Will not by default.
+---@param reset boolean? Whether or not to reset the animation upon starting it. Will reset by default.
+function HL.SetAnimation(player, animation, match, reset)
     if not player.HL or not player.HL.ViewmodelData then
         return
     end
@@ -113,8 +115,27 @@ function HL.SetAnimation(player, animation)
 
     hl.ViewmodelData.State = animation
 
-    hl.ViewmodelData.Progress = 1
-    hl.ViewmodelData.Clock = 1
+    local animation = HL.Viewmodels[player.HL.CurrentWeapon.Name][animation]
+
+    hl.ViewmodelData.RandomIndex = $ or 1
+
+    if animation then
+        -- Animation is... an animation
+        if animation.Durations and animation.Length then
+            hl.ViewmodelData.Animation = animation
+        -- Assume it is an assortment otherwise
+        else
+            hl.ViewmodelData.RandomIndex = match and $ or P_RandomRange(1, #animation)
+            hl.ViewmodelData.Animation = animation[hl.ViewmodelData.RandomIndex]
+        end
+    else
+        hl.ViewmodelData.Animation = nil
+    end
+
+    if reset == nil or reset then
+        hl.ViewmodelData.Progress = 1
+        hl.ViewmodelData.Clock = 1
+    end
 end
 
 ---@class hlanimframe_t
