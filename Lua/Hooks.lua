@@ -116,6 +116,27 @@ local function RunFireHooks(player, hl, use_hook)
     return override
 end
 
+---@param player player_t
+---@param hl hlplayer_t
+---@param use_hook table
+local function RunStopHooks(player, hl, use_hook)
+    for _, hook in ipairs(HL.Hooks.OnStopFiring) do
+        if hook.Extra and hook.Extra ~= hl.CurrentWeapon.Name then
+            continue
+        end
+
+        hook.Callback(player, hl.CurrentWeapon)
+    end
+
+    for _, hook in ipairs(use_hook) do
+        if hook.Extra and hook.Extra ~= hl.CurrentWeapon.Name then
+            continue
+        end
+
+        hook.Callback(player, hl.CurrentWeapon)
+    end
+end
+
 ---@param hl hlplayer_t
 local function PlayerHasEnoughPrimaryAmmo(hl)
     if hl.CurrentWeapon.PrimaryFire.AmmoType == HL.AmmunitionType.None then
@@ -171,7 +192,11 @@ end
 ---@param player player_t
 ---@param hl hlplayer_t
 local function HandlePrimaryFire(player, hl)
-    if not (player.cmd.buttons & BT_ATTACK) or hl.WeaponPalette.Open then
+    if not (player.cmd.buttons & BT_ATTACK) then
+        if hl.CurrentWeapon.PrimaryFire.Fire.Automatic and (player.lastbuttons & BT_ATTACK) then
+            RunStopHooks(player, hl, HL.Hooks.OnPrimaryStop)
+        end
+
         return
     end
 
@@ -207,6 +232,10 @@ local function HandleSecondaryFire(player, hl)
     end
 
     if not (player.cmd.buttons & BT_FIRENORMAL) then
+        if hl.CurrentWeapon.SecondaryFire.Fire.Automatic and (player.lastbuttons & BT_FIRENORMAL) then
+            RunStopHooks(player, hl, HL.Hooks.OnSecondaryStop)
+        end
+
         return
     end
 

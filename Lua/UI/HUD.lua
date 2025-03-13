@@ -34,7 +34,7 @@ addHook("HUD", function(drawer, player, camera)
         return
     end
 
-    for i = 1, #hl.Inventory.Weapons do
+    for i, _ in pairs(hl.Inventory.Weapons) do
         local x_offset = (i - 1) * 22 + 2
         local y_offset = 2
 

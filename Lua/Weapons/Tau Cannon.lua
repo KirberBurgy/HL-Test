@@ -123,35 +123,11 @@ HL.Viewmodels[HL.Weapons.TauCannon.Name] = {
 ---@param player player_t
 ---@param weapon hlweapon_t
 addHook("HL_OnPrimaryUse", function(player, weapon)
-    if player.HL.ViewmodelData.State == HL.AnimationType.TauCannon.SpinUp then
-        return true
-    end
+    ---@class hlplayer_t
+    local hl = player.HL
 
-    if player.HL.ViewmodelData.State == HL.AnimationType.TauCannon.Spin
-    and weapon.AmmoUsed >= 2 
-    then
-        local multiplier = FRACUNIT * (weapon.AmmoUsed + 1) / 14
-
-        -- Max charge: 13 ammo → 200 damage
-        weapon.PrimaryFire.Fire.Damage = 200 * multiplier
-
-        HL.FireProjectileWeapon(player, weapon, weapon.PrimaryFire)
-        HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
-        HL.SetAnimation(player, HL.AnimationType.Secondary)
-        
-        local force = 80 * multiplier
-
-        local yaw = player.mo.angle
-        local pitch = player.aiming
-
-        player.mo.momx = $ - FixedMul( force, FixedMul( cos(yaw), cos(pitch) ) )
-        player.mo.momy = $ - FixedMul( force, FixedMul( sin(yaw), cos(pitch) ) )
-        player.mo.momz = $ - FixedMul( force / 2, sin(pitch) )
-    
-        player.HL.Cooldown = 3 * TICRATE / 2
-
-        -- Reset the weapon damage after firing.
-        weapon.PrimaryFire.Fire.Damage = FRACUNIT * 20
+    if hl.ViewmodelData.State == HL.AnimationType.TauCannon.SpinUp
+    or hl.ViewmodelData.State == HL.AnimationType.TauCannon.Spin then
         return true
     end
 end, HL.Weapons.TauCannon.Name)
@@ -179,7 +155,7 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
 
     weapon.SpinTime = $ + 1
 
-    if weapon.SpinTime % 10 == 0 and weapon.SpinTime <= (13 * 10) and hl.Inventory.Ammo[HL.AmmunitionType.Uranium] > 2 then
+    if weapon.SpinTime % 10 == 0 and weapon.SpinTime <= (13 * 10) and hl.Inventory.Ammo[HL.AmmunitionType.Uranium] > 0 then
         weapon.AmmoUsed = weapon.AmmoUsed + 1
         hl.Inventory.Ammo[HL.AmmunitionType.Uranium] = hl.Inventory.Ammo[HL.AmmunitionType.Uranium] - 1
     end 
@@ -190,6 +166,48 @@ addHook("HL_OnSecondaryUse", function(player, weapon)
 
     return true
 end, HL.Weapons.TauCannon.Name)
+
+
+---@param player player_t
+---@param weapon hlweapon_t
+addHook("HL_OnSecondaryStop", function(player, weapon)
+    ---@class hlplayer_t
+    local hl = player.HL
+
+    if not (weapon.SpinTime and weapon.AmmoUsed and hl.ViewmodelData.State == HL.AnimationType.TauCannon.Spin) then
+        return
+    end
+
+    if weapon.AmmoUsed < 1 then
+        return
+    end
+    
+    local multiplier = FRACUNIT * (weapon.AmmoUsed + 1) / 14
+
+    -- Max charge: 13 ammo → 200 damage
+    weapon.PrimaryFire.Fire.Damage = 200 * multiplier
+
+    HL.FireProjectileWeapon(player, weapon, weapon.PrimaryFire)
+    HL.PlayFireSound(player.mo, weapon.PrimaryFire.Fire)
+    HL.SetAnimation(player, HL.AnimationType.Secondary)
+    
+    local force = 80 * multiplier
+
+    local yaw = player.mo.angle
+    local pitch = player.aiming
+
+    player.mo.momx = $ - FixedMul( force, FixedMul( cos(yaw), cos(pitch) ) )
+    player.mo.momy = $ - FixedMul( force, FixedMul( sin(yaw), cos(pitch) ) )
+    player.mo.momz = $ - FixedMul( force / 2, sin(pitch) )
+
+    player.HL.Cooldown = 3 * TICRATE / 2
+
+    -- Reset the weapon damage after firing.
+    weapon.PrimaryFire.Fire.Damage = FRACUNIT * 20
+    return true
+
+end, HL.Weapons.TauCannon.Name)
+
 
 ---@param player player_t
 ---@param projectile mobj_t

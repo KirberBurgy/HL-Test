@@ -102,6 +102,10 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
         projectile.z + sin(pitch) * 40
     )
     
+    if not projectile.valid then
+        return true
+    end
+
     -- Height should be at its largest
     -- when the aiming angle is centered.
     projectile.height = 32 * abs( cos(pitch) ) + 16 * FRACUNIT

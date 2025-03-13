@@ -21,13 +21,13 @@ HL.Hooks = {
     -- Called every frame on every
     -- player that is a Gordon Freeman.
     -- Hook signature:
-    -- `addHook("HL_FreemanThinker", function(player_t freeman))
+    -- `addHook("HL_FreemanThinker", function(player_t freeman))`
     FreemanThinker      = {},
 
     -- Called on the frame that a weapon 
     -- is first equipped.
     -- Hook signature:
-    -- `addHook("HL_OnEquip", function(player_t player, weapon_t weapon), [string weapon_name])
+    -- `addHook("HL_OnEquip", function(player_t player, weapon_t weapon), [string weapon_name])`
     OnEquip             = {},
 
     -- Called on the first frame a
@@ -43,7 +43,7 @@ HL.Hooks = {
     -- Called whenever a weapon is fired,
     -- either primary or secondary.
     -- Hook signature:
-    -- `addHook("HL_OnFire", function(player_t player, weapon_t weapon), [string weapon_name]) 
+    -- `addHook("HL_OnFire", function(player_t player, weapon_t weapon), [string weapon_name])`
     -- If the function returns true, the weapon's projectile is not fired.
     OnFire              = {},
 
@@ -61,6 +61,24 @@ HL.Hooks = {
     -- `addHook("HL_OnSecondaryUse", function(player_t player, weapon_t weapon), [string weapon_name])` 
     -- If the function returns true, the weapon's secondary projectile is not fired.
     OnSecondaryUse      = {},
+
+    -- Called when an automatic weapon stops
+    -- firing.
+    -- Hook signature:
+    -- `addHook("HL_OnStopFiring", function(player_t player, weapon_t weapon), [string weapon_name])`
+    OnStopFiring        = {},
+
+    -- Called when an automatic primary
+    -- weapon stops firing.
+    -- Hook signature:
+    -- `addHook("HL_OnPrimaryStop", function(player_t player, weapon_t weapon), [string weapon_name])`
+    OnPrimaryStop       = {},
+
+    -- Called when an automatic secondary
+    -- weapon stops firing.
+    -- Hook signature:
+    -- `addHook("HL_OnSecondaryStop", function(player_t player, weapon_t weapon), [string weapon_name])`
+    OnSecondaryStop     = {},
     
     -- Called whenever a weapon hits a line.
     -- Hook signature:
@@ -87,7 +105,7 @@ HL.Hooks = {
 
     -- Called whenever a pickup is touched.
     -- Hook signature:
-    -- `addHook("HL_OnPickupGained", function(player_t player), [MT_* object_type])
+    -- `addHook("HL_OnPickupGained", function(player_t player), [MT_* object_type])`
     OnPickupGained      = {}
 }
 
@@ -102,6 +120,9 @@ HL.Weapons = {}
 ---| "HL_OnFire"
 ---| "HL_OnPrimaryUse"
 ---| "HL_OnSecondaryUse"
+---| "HL_OnStopFiring"
+---| "HL_OnPrimaryStop"
+---| "HL_OnSecondaryStop"
 ---| "HL_OnWeaponLineHit"
 ---| "HL_OnWeaponHit"
 ---| "HL_OnHitscanHit"
