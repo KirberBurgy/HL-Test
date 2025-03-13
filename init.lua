@@ -151,6 +151,7 @@ dofile("Weapons/Magnum.lua")
 dofile("Weapons/Shotgun.lua")
 dofile("Weapons/SMG.lua")
 dofile("Weapons/Tau Cannon.lua")
+dofile("Weapons/Gluon Gun.lua")
 dofile("Weapons/Crowbar.lua")
 
 dofile("Inventory.lua")
