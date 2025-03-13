@@ -41,17 +41,17 @@ local function OnWeaponHit(projectile, hit)
 
     HL.PlayHitEnemySound(projectile, projectile.HL.SourceFire.Fire)
 
-    for _, hook in ipairs(HL.Hooks.OnWeaponHit) do
-        if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            hook.Callback(projectile.target.player, projectile, hit)
-        end
-    end
-
     for _, hook in ipairs(correct_hook) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
             hook.Callback(projectile.target.player, projectile, hit)
         end
     end
+
+    for _, hook in ipairs(HL.Hooks.OnWeaponHit) do
+        if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
+            hook.Callback(projectile.target.player, projectile, hit)
+        end
+    end 
 end
 
 ---@param mo mobj_t
@@ -79,14 +79,22 @@ end
 ---@param use_hook table
 ---@return boolean
 local function RunFireHooks(player, hl, use_hook)
-    local override = false
+    local override = nil
 
     for _, hook in ipairs(HL.Hooks.OnFire) do
         if hook.Extra and hook.Extra ~= hl.CurrentWeapon.Name then
             continue
         end
 
-        override = hook.Callback(player, hl.CurrentWeapon) or $
+        local out = hook.Callback(player, hl.CurrentWeapon)
+
+        if out == false then
+            override = $ or false
+        end
+
+        if out == true then
+            override = $ or true
+        end
     end
 
     for _, hook in ipairs(use_hook) do
@@ -94,7 +102,15 @@ local function RunFireHooks(player, hl, use_hook)
             continue
         end
 
-        override = hook.Callback(player, hl.CurrentWeapon) or $
+        local out = hook.Callback(player, hl.CurrentWeapon)
+
+        if out == false then
+            override = $ or false
+        end
+
+        if out == true then
+            override = $ or true
+        end
     end
 
     return override

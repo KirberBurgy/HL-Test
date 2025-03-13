@@ -104,13 +104,6 @@ local function NewPlayerWeapons()
         },
         [HL.WeaponClass.Handgun] = { 
             RecursiveClone(HL.Weapons.Pistol)
-        },
-        [HL.WeaponClass.Primary] = {
-            RecursiveClone(HL.Weapons.Shotgun),
-            RecursiveClone(HL.Weapons.SMG)
-        },
-        [HL.WeaponClass.Experimental] = {
-            RecursiveClone(HL.Weapons["Tau Cannon"])
         }
     }
 end

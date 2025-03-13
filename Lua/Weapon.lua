@@ -77,7 +77,7 @@ function HL.FireHitscanWeapon(player, weapon, fire_mode)
         Player = player,
         SourceWeapon = weapon,
         SourceFire = fire_mode,
-        Damage = fire_mode.Fire.Damage + ( P_RandomFixed() - FU / 2 ) * fire_mode.Fire.DamageVariance
+        Damage = fire_mode.Fire.Damage + FixedMul( ( P_RandomFixed() - FU / 2 ), fire_mode.Fire.DamageVariance )
     }
 
     local yaw = player.mo.angle
@@ -112,7 +112,7 @@ function HL.FireProjectileWeapon(player, weapon, fire_mode)
         Player = player,
         SourceWeapon = weapon,
         SourceFire = fire_mode,
-        Damage = fire_mode.Fire.Damage + ( P_RandomFixed() - FU / 2 ) * fire_mode.Fire.DamageVariance
+        Damage = fire_mode.Fire.Damage + FixedMul( ( P_RandomFixed() - FU / 2 ), fire_mode.Fire.DamageVariance )
     }
 
     local yaw = player.mo.angle

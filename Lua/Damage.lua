@@ -40,7 +40,7 @@ function HL.Register(object_type, traits)
                 end
                 
                 P_SpawnMobjFromMobj(
-                    object
+                    object,
                     P_RandomFixed() * 20,
                     P_RandomFixed() * 20,
                     0,
@@ -339,5 +339,39 @@ HL.Register(MT_JETTBOMBER, {
 
 --#endregion
 
+--#region Bosses
 
+HL.Register(MT_EGGMOBILE, {
+    Health = 30 * FU,
+    Damage = 10 * FU,
+    Pickups = {
+        { Object = MT_HLSHOTGUNDROP, Probability = FRACUNIT },
+        { Object = MT_HLSMGDROP, Probability = FRACUNIT }
+    }
+})
 
+--#endregion
+
+---@param player player_t
+---@param projectile mobj_t
+---@param target mobj_t
+---@return boolean?
+addHook("HL_OnWeaponHit", function(player, projectile, target)
+    -- If the target health is not set (-1) then return (use regular damage checks)
+    if not (target and target.HLHealth and target.HLHealth ~= -1) then
+        return
+    end
+
+    local target_last_health = target.HLHealth
+    target.HLHealth = $ - projectile.HL.Damage
+
+    if target.HLHealth < 0 then
+        P_DamageMobj(target, projectile, player.mo, 1 + ( target_last_health - target.HLHealth ) / object_defs[target.type].Health )
+
+        target.HLHealth = object_defs[target.type].Health
+    end
+
+    P_KillMobj(projectile)
+
+    return false
+end)
