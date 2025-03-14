@@ -1,20 +1,32 @@
-freeslot("MT_GLUONLASER")
+freeslot("MT_GLUONLASER", "MT_GLUONPARTICLE")
 
-freeslot("S_GLUON_LASER")
+freeslot("S_GLUON_LASER", "S_GLUON_PARTICLE")
 
-freeslot("SPR_GLST")
+freeslot("SPR_GLST", "SPR_GLPT")
 
 freeslot("sfx_egonup", "sfx_egongo", "sfx_egondn")
 
 states[S_GLUON_LASER] = {
     sprite = SPR_GLST,
-    frame = FF_ADD | FF_PAPERSPRITE | FF_TRANS30,
+    frame = FF_ADD | FF_FLOORSPRITE | FF_TRANS30,
+    tics = -1
+}
+
+states[S_GLUON_PARTICLE] = {
+    sprite = SPR_GLPT,
+    frame = FF_ADD | FF_TRANS50,
     tics = -1
 }
 
 mobjinfo[MT_GLUONLASER] = {
     spawnhealth = 1,
     spawnstate = S_GLUON_LASER,
+    flags = MF_NOCLIPTHING | MF_NOCLIPHEIGHT | MF_NOGRAVITY
+}
+
+mobjinfo[MT_GLUONPARTICLE] = {
+    spawnhealth = 1,
+    spawnstate = S_GLUON_PARTICLE,
     flags = MF_NOCLIPTHING | MF_NOCLIPHEIGHT | MF_NOGRAVITY
 }
 
@@ -28,7 +40,7 @@ HL.Weapons.GluonGun = {
         Fire = {
             Cooldown = 0,
             Automatic = true,
-            Damage = FU * 14,
+            Damage = FU * 14 / 3,
             DamageVariance = 0,
             Spread = 0,
             RequiredAmmo = 1
@@ -42,7 +54,7 @@ HL.Viewmodels[HL.Weapons.GluonGun.Name] = {
     OffsetX = 352 * FU,
     OffsetY = 0,
 
-    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("EGON_READY", 16, { [1] = 1 }),
+    [HL.AnimationType.Ready] = HL.NewWeaponAnimation("EGON_READY-", 16, { [1] = 1 }),
     [HL.AnimationType.Idle] = {
         HL.NewWeaponAnimation("EGON_IDLE1-", 60, { [1] = 1 }),
         --HL.NewWeaponAnimation("EGON_IDLE2-", 60, { [1] = 1 })
@@ -55,12 +67,90 @@ HL.Viewmodels[HL.Weapons.GluonGun.Name] = {
     }
 }
 
+local function SpawnGluonSpiral(player, origin_x, origin_y, origin_z)
+    local distance = 16  -- Radius of the spiral
+    local length = 33 * 4 * FU
+    local num_points = 32  -- Number of points in the spiral (one full loop)
+
+    local yaw = player.mo.angle
+    local pitch = player.aiming
+
+    local x = FixedMul(cos(yaw), cos(pitch))
+    local y = FixedMul(sin(yaw), cos(pitch))
+    local z = sin(pitch)
+
+    for i = 1, num_points do
+        ---@type angle_t
+        local angle = yaw + (leveltime * ANG1) + ANGLE_11hh * (i - 1)  -- Rotates by 45 degrees per step
+
+        local step = length / num_points * i
+
+        -- fucky wucky math stuff i dont like
+
+        -- forms a unit circle around a line
+        -- P(a) = [(-cos a)(sin y) - (sin a)(cos y)(sin p)]
+        --        [(cos a)(cos y) - (sin a)(sin y)(sin p)]
+        --        [(sin a)(cos p)]
+
+        local particle = P_SpawnMobj(
+            origin_x + ( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)) ) * distance + FixedMul(x, step),
+            origin_y + ( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)) ) * distance + FixedMul(y, step),
+            origin_z + FixedMul( sin(angle), cos(pitch)) * distance + FixedMul(z, step),
+            MT_GLUONPARTICLE
+        )
+        particle.fuse = 2
+    end
+end
+
+---@param player player_t
+---@param end_point_x fixed_t
+---@param end_point_y fixed_t
+local function SpawnGluonRay(player, end_point_x, end_point_y)
+    local strip_length = 33
+
+    local strips = FixedInt( R_PointToDist2(player.mo.x, player.mo.y, end_point_x, end_point_y) / strip_length )
+
+    local yaw = player.mo.angle
+    local pitch = player.aiming
+
+    local x = FixedMul(cos(yaw), cos(pitch))
+    local y = FixedMul(sin(yaw), cos(pitch))
+    local z = sin(pitch)
+    
+    local world_muzzle_x = player.mo.x + sin(yaw) * 36
+    local world_muzzle_y = player.mo.y - cos(yaw) * 36
+
+    for i = 1, strips do
+        local strip = P_SpawnMobj(
+            world_muzzle_x + strip_length * i * x,
+            world_muzzle_y + strip_length * i * y,
+            player.mo.z    + player.mo.height / 2 + strip_length * i * z,
+            MT_GLUONLASER
+        )
+
+        strip.fuse = 2
+        strip.angle = yaw
+        strip.flags2 = $ | MF2_SPLAT
+        strip.renderflags = $ | RF_SLOPESPLAT
+
+        P_CreateFloorSpriteSlope(strip)
+
+        strip.floorspriteslope.xydirection = yaw
+        strip.floorspriteslope.zangle = pitch
+        strip.floorspriteslope.o = { x = strip.x, y = strip.y, z = strip.z }
+
+        if (i - 1) % 4 == 0 then
+            SpawnGluonSpiral(player, strip.x - sin(yaw) * 18, strip.y + cos(yaw) * 18, strip.z)
+        end
+    end
+end
+
 ---@param player player_t
 ---@param weapon hlweapon_t
 addHook("HL_OnPrimaryUse", function(player, weapon)
-    weapon.TicsUsed = $ or 0
-
     if player.cmd.buttons & BT_ATTACK and not (player.lastbuttons & BT_ATTACK) then
+        weapon.TicsUsed = $ or 1
+    
         S_StartSound(player.mo, sfx_egonup)
     end
 
@@ -73,7 +163,34 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
         HL.SetAnimation(player, HL.AnimationType.Primary)
     end
 
+    HL.FireHitscanWeapon(player, weapon, weapon.PrimaryFire)
+
     weapon.TicsUsed = $ + 1
 
     return true
+end, HL.Weapons.GluonGun.Name)
+
+addHook("HL_OnHitscanHit", function(player, projectile, target)
+    SpawnGluonRay(player, projectile.x, projectile.y)
+end, HL.Weapons.GluonGun.Name)
+
+addHook("HL_OnWeaponBlocked", function(player, projectile)
+    SpawnGluonRay(player, projectile.x, projectile.y)
+end, HL.Weapons.GluonGun.Name)
+
+addHook("HL_OnWeaponLineHit", function(player, projectile, line)
+    local x, y = P_ClosestPointOnLine(projectile.x, projectile.y, line)
+
+    SpawnGluonRay(player, x, y)
+end, HL.Weapons.GluonGun.Name)
+
+addHook("HL_OnPrimaryStop", function(player, weapon)
+    if weapon.TicsUsed then
+        S_StopSoundByID(player.mo, sfx_egonup)
+        S_StopSoundByID(player.mo, sfx_egongo)
+        S_StartSound(player.mo, sfx_egondn)
+
+        weapon.TicsUsed = 0
+    end
+    
 end, HL.Weapons.GluonGun.Name)

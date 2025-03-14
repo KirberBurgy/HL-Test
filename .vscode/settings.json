@@ -1,0 +1,9 @@
+{
+    "Lua.diagnostics.disable": [
+        "inject-field",
+        "miss-symbol",
+        "missing-fields",
+        "undefined-field",
+        "param-type-mismatch"
+    ]
+}
