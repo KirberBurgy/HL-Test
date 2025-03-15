@@ -1,4 +1,4 @@
-freeslot("sfx_9mmsh1")
+freeslot("sfx_9mmsh1", "sfx_9mmclp")
 
 ---@class hlweapon_t
 HL.Weapons.Pistol = {
@@ -10,7 +10,7 @@ HL.Weapons.Pistol = {
         Reload = {
             ClipSize = 17,
             CurrentClip = 0,
-            ReloadDelay = 66
+            ReloadDelay = 47
         },
 
         Fire = {
@@ -65,7 +65,5 @@ HL.Viewmodels[HL.Weapons.Pistol.Name] = {
     }),
 
     -- Don't drink this code. They put something in it, to make you forget.
-    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("PISTOL_RELOAD", 41, {
-        [1] = 2
-    })
+    [HL.AnimationType.Reload] = HL.NewWeaponAnimation("PISTOL_RELOAD", 41, { [1] = 2 }, { [25] = sfx_9mmclp })
 }

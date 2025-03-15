@@ -6,7 +6,7 @@ local function ProjectileThinker(projectile)
 
     if projectile.HL.IsHitscan then
         while not P_RailThinker(projectile) do end
-        
+
         return
     end
 
@@ -41,17 +41,21 @@ local function OnWeaponHit(projectile, hit)
 
     HL.PlayHitEnemySound(projectile, projectile.HL.SourceFire.Fire)
 
+    local override = nil
+
     for _, hook in ipairs(correct_hook) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            hook.Callback(projectile.target.player, projectile, hit)
+            override = $ or hook.Callback(projectile.target.player, projectile, hit)
         end
     end
 
     for _, hook in ipairs(HL.Hooks.OnWeaponHit) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            hook.Callback(projectile.target.player, projectile, hit)
+            override = $ or hook.Callback(projectile.target.player, projectile, hit)
         end
     end 
+
+    return override
 end
 
 ---@param mo mobj_t

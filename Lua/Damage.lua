@@ -362,6 +362,12 @@ addHook("HL_OnWeaponHit", function(player, projectile, target)
         return
     end
 
+    projectile.HL.Hit = $ or {}
+
+    if projectile.HL.Hit[target] then
+        return false
+    end
+
     local target_last_health = target.HLHealth
     target.HLHealth = $ - projectile.HL.Damage
 
@@ -371,7 +377,7 @@ addHook("HL_OnWeaponHit", function(player, projectile, target)
         target.HLHealth = object_defs[target.type].Health
     end
 
-    P_KillMobj(projectile)
+    projectile.HL.Hit[target] = true
 
     return false
 end)

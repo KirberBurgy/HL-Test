@@ -124,9 +124,9 @@ addHook("HL_OnProjectileHit", function(player, projectile, target)
         return
     end
 
-    HL.SetAnimation(player, HL.AnimationType.Crowbar.Hit, true)
+    HL.SetAnimation(player, HL.AnimationType.Crowbar.Hit, true, false)
 end, HL.Weapons.Crowbar.Name)
 
 addHook("HL_OnWeaponLineHit", function(player, projectile, line)
-    HL.SetAnimation(player, HL.AnimationType.Crowbar.Hit, true)
+    HL.SetAnimation(player, HL.AnimationType.Crowbar.Hit, true, false)
 end, HL.Weapons.Crowbar.Name)
