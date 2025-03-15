@@ -6,7 +6,7 @@ local function ProjectileThinker(projectile)
 
     if projectile.HL.IsHitscan then
         while not P_RailThinker(projectile) do end
-
+        
         return
     end
 
@@ -70,22 +70,6 @@ local function OnWeaponLineHit(mo, _, line)
     for _, hook in ipairs(HL.Hooks.OnWeaponLineHit) do
         if not hook.Extra or hook.Extra == mo.HL.SourceWeapon.Name then
             hook.Callback(mo.HL.Player, mo, line)
-        end
-    end
-end
-
-local function OnWeaponBlocked(mo)
-    if not mo or not mo.valid then
-        return
-    end
-
-    if not mo.HL then
-        return
-    end
-
-    for _, hook in ipairs(HL.Hooks.OnWeaponBlocked) do
-        if not hook.Extra or hook.Extra == mo.HL.SourceWeapon.Name then
-            hook.Callback(mo.HL.Player, mo)
         end
     end
 end
@@ -370,7 +354,6 @@ for i = 0, #mobjinfo - 1 do
     addHook("MobjThinker", ProjectileThinker, i)
     addHook("MobjMoveBlocked", OnWeaponLineHit, i)
     addHook("MobjMoveCollide", OnWeaponHit, i)
-    addHook("MobjDeath", OnWeaponBlocked, i)
 end
 
 addHook("AddonLoaded", function()
@@ -382,7 +365,6 @@ addHook("AddonLoaded", function()
         addHook("MobjThinker", ProjectileThinker, i)
         addHook("MobjMoveBlocked", OnWeaponLineHit, i)
         addHook("MobjMoveCollide", OnWeaponHit, i)
-        addHook("MobjDeath", OnWeaponBlocked, i)
     end
 
     mobj_number = #mobjinfo - 1

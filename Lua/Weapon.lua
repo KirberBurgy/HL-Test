@@ -87,8 +87,6 @@ function HL.FireHitscanWeapon(player, weapon, fire_mode)
     bullet.momy = FixedMul(sin( yaw ), cos(pitch)) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
     bullet.momz = sin(pitch) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
 
-    while not P_RailThinker(bullet) do end
-
     return bullet
 end
 

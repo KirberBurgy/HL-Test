@@ -106,12 +106,7 @@ HL.Hooks = {
     -- Called whenever a pickup is touched.
     -- Hook signature:
     -- `addHook("HL_OnPickupGained", function(player_t player), [MT_* object_type])`
-    OnPickupGained      = {},
-
-    -- Called whenever a weapon's projectile
-    -- dies.
-    -- `addHook("HL_OnWeaponBlocked", function(player_t, mobj_t projectile), [string weapon_name])`
-    OnWeaponBlocked     = {}
+    OnPickupGained      = {}
 }
 
 HL.Weapons = {}

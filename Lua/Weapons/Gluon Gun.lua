@@ -14,7 +14,7 @@ states[S_GLUON_LASER] = {
 
 states[S_GLUON_PARTICLE] = {
     sprite = SPR_GLPT,
-    frame = FF_ADD | FF_TRANS50,
+    frame = FF_ADD | FF_TRANS90,
     tics = -1
 }
 
@@ -67,41 +67,6 @@ HL.Viewmodels[HL.Weapons.GluonGun.Name] = {
     }
 }
 
-local function SpawnGluonSpiral(player, origin_x, origin_y, origin_z)
-    local distance = 16  -- Radius of the spiral
-    local length = 33 * 4 * FU
-    local num_points = 32  -- Number of points in the spiral (one full loop)
-
-    local yaw = player.mo.angle
-    local pitch = player.aiming
-
-    local x = FixedMul(cos(yaw), cos(pitch))
-    local y = FixedMul(sin(yaw), cos(pitch))
-    local z = sin(pitch)
-
-    for i = 1, num_points do
-        ---@type angle_t
-        local angle = yaw + (leveltime * ANG1) + ANGLE_11hh * (i - 1)  -- Rotates by 45 degrees per step
-
-        local step = length / num_points * i
-
-        -- fucky wucky math stuff i dont like
-
-        -- forms a unit circle around a line
-        -- P(a) = [(-cos a)(sin y) - (sin a)(cos y)(sin p)]
-        --        [(cos a)(cos y) - (sin a)(sin y)(sin p)]
-        --        [(sin a)(cos p)]
-
-        local particle = P_SpawnMobj(
-            origin_x + ( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)) ) * distance + FixedMul(x, step),
-            origin_y + ( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)) ) * distance + FixedMul(y, step),
-            origin_z + FixedMul( sin(angle), cos(pitch)) * distance + FixedMul(z, step),
-            MT_GLUONPARTICLE
-        )
-        particle.fuse = 2
-    end
-end
-
 ---@param player player_t
 ---@param end_point_x fixed_t
 ---@param end_point_y fixed_t
@@ -116,10 +81,51 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     local x = FixedMul(cos(yaw), cos(pitch))
     local y = FixedMul(sin(yaw), cos(pitch))
     local z = sin(pitch)
-    
+
     local world_muzzle_x = player.mo.x + sin(yaw) * 36
     local world_muzzle_y = player.mo.y - cos(yaw) * 36
 
+    local midpoint_x = (player.mo.x + end_point_x) / 2
+    local midpoint_y = (player.mo.y + end_point_y) / 2
+    local dist_max = R_PointToDist2(player.mo.x, player.mo.y, end_point_x, end_point_y) / 2
+
+    local function SpawnGluonSpiral(strip)
+        --print(tostring(distance))
+
+        local length = 33 * 4 * FU
+        local num_points = 32  -- Number of points in the spiral (one full loop)
+
+    
+        for i = 1, num_points do
+            ---@type angle_t
+            local angle = yaw + (leveltime * ANG1) + ANGLE_11hh * (i - 1)
+    
+            local step = length / num_points * i
+    
+            local midpoint_distance = FixedDiv(R_PointToDist2(strip.x + FixedMul(x, step), strip.y + FixedMul(y, step), midpoint_x, midpoint_y), dist_max)
+
+            local distance = (FU - midpoint_distance) * 16 -- Spiral radius
+            if midpoint_distance < FixedDiv(FU / 4, dist_max) then
+                distance = 16 * FU
+            end
+
+            -- fucky wucky math stuff i dont like
+    
+            -- forms a unit circle around a line
+            -- P(a) = [(-cos a)(sin y) - (sin a)(cos y)(sin p)]
+            --        [(cos a)(cos y) - (sin a)(sin y)(sin p)]
+            --        [(sin a)(cos p)]
+    
+            local particle = P_SpawnMobj(
+                strip.x + FixedMul( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)), distance) + FixedMul(x, step) - sin(yaw) * 18,
+                strip.y + FixedMul( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)), distance) + FixedMul(y, step) + cos(yaw) * 18,
+                strip.z + FixedMul( FixedMul( sin(angle), cos(pitch)), distance ) + FixedMul(z, step),
+                MT_GLUONPARTICLE
+            )
+            particle.fuse = 2
+        end
+    end
+    
     for i = 1, strips do
         local strip = P_SpawnMobj(
             world_muzzle_x + strip_length * i * x,
@@ -140,7 +146,7 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
         strip.floorspriteslope.o = { x = strip.x, y = strip.y, z = strip.z }
 
         if (i - 1) % 4 == 0 then
-            SpawnGluonSpiral(player, strip.x - sin(yaw) * 18, strip.y + cos(yaw) * 18, strip.z)
+            SpawnGluonSpiral(strip)
         end
     end
 end
@@ -174,9 +180,6 @@ addHook("HL_OnHitscanHit", function(player, projectile, target)
     SpawnGluonRay(player, projectile.x, projectile.y)
 end, HL.Weapons.GluonGun.Name)
 
-addHook("HL_OnWeaponBlocked", function(player, projectile)
-    SpawnGluonRay(player, projectile.x, projectile.y)
-end, HL.Weapons.GluonGun.Name)
 
 addHook("HL_OnWeaponLineHit", function(player, projectile, line)
     local x, y = P_ClosestPointOnLine(projectile.x, projectile.y, line)
