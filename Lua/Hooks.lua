@@ -37,25 +37,27 @@ local function OnWeaponHit(projectile, hit)
         return
     end
 
+    if projectile.HL.Hit and projectile.HL.Hit[hit] then
+        return false
+    end
+    
     local correct_hook = projectile.HL.IsHitscan and HL.Hooks.OnHitscanHit or HL.Hooks.OnProjectileHit
 
     HL.PlayHitEnemySound(projectile, projectile.HL.SourceFire.Fire)
 
-    local override = nil
-
     for _, hook in ipairs(correct_hook) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            override = $ or hook.Callback(projectile.target.player, projectile, hit)
+            hook.Callback(projectile.target.player, projectile, hit)
         end
     end
 
     for _, hook in ipairs(HL.Hooks.OnWeaponHit) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            override = $ or hook.Callback(projectile.target.player, projectile, hit)
+            hook.Callback(projectile.target.player, projectile, hit)
         end
     end 
 
-    return override
+    return false
 end
 
 ---@param mo mobj_t
@@ -347,29 +349,10 @@ addHook("HL_FreemanThinker", function(player)
     end
 end)
 
--- garbanzo code
-local mobj_number = #mobjinfo - 1
-
-for i = 0, #mobjinfo - 1 do
-    if not ( mobjinfo[i].flags & MF_MISSILE ) then
-        continue
-    end
-
-    addHook("MobjThinker", ProjectileThinker, i)
-    addHook("MobjMoveBlocked", OnWeaponLineHit, i)
-    addHook("MobjMoveCollide", OnWeaponHit, i)
+--- Registers a projectile for use with weapon definitions.
+---@param object_type integer
+function HL.RegisterProjectile(object_type)
+    addHook("MobjThinker", ProjectileThinker, object_type)
+    addHook("MobjMoveBlocked", OnWeaponLineHit, object_type)
+    addHook("MobjMoveCollide", OnWeaponHit, object_type)
 end
-
-addHook("AddonLoaded", function()
-    for i = mobj_number, #mobjinfo - 1 do
-        if not ( mobjinfo[i].flags & MF_MISSILE ) then
-            continue
-        end
-    
-        addHook("MobjThinker", ProjectileThinker, i)
-        addHook("MobjMoveBlocked", OnWeaponLineHit, i)
-        addHook("MobjMoveCollide", OnWeaponHit, i)
-    end
-
-    mobj_number = #mobjinfo - 1
-end)

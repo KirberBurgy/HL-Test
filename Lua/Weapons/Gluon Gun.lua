@@ -82,16 +82,14 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     local y = FixedMul(sin(yaw), cos(pitch))
     local z = sin(pitch)
 
-    local world_muzzle_x = player.mo.x + sin(yaw) * 36
-    local world_muzzle_y = player.mo.y - cos(yaw) * 36
+    local muzzle_x = sin(yaw) * 36
+    local muzzle_y = -cos(yaw) * 36
 
     local midpoint_x = (player.mo.x + end_point_x) / 2
     local midpoint_y = (player.mo.y + end_point_y) / 2
     local dist_max = R_PointToDist2(player.mo.x, player.mo.y, end_point_x, end_point_y) / 2
 
     local function SpawnGluonSpiral(strip)
-        --print(tostring(distance))
-
         local length = 33 * 4 * FU
         local num_points = 32  -- Number of points in the spiral (one full loop)
 
@@ -116,10 +114,11 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
             --        [(cos a)(cos y) - (sin a)(sin y)(sin p)]
             --        [(sin a)(cos p)]
     
-            local particle = P_SpawnMobj(
-                strip.x + FixedMul( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)), distance) + FixedMul(x, step) - sin(yaw) * 18,
-                strip.y + FixedMul( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)), distance) + FixedMul(y, step) + cos(yaw) * 18,
-                strip.z + FixedMul( FixedMul( sin(angle), cos(pitch)), distance ) + FixedMul(z, step),
+            local particle = P_SpawnMobjFromMobj(
+                strip,
+                FixedMul( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)), distance) + FixedMul(x, step) - muzzle_x / 2,
+                FixedMul( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)), distance) + FixedMul(y, step) - muzzle_x / 2,
+                FixedMul( FixedMul( sin(angle), cos(pitch)), distance ) + FixedMul(z, step),
                 MT_GLUONPARTICLE
             )
             particle.fuse = 2
@@ -127,10 +126,11 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     end
     
     for i = 1, strips do
-        local strip = P_SpawnMobj(
-            world_muzzle_x + strip_length * i * x,
-            world_muzzle_y + strip_length * i * y,
-            player.mo.z    + player.mo.height / 2 + strip_length * i * z,
+        local strip = P_SpawnMobjFromMobj(
+            player.mo,
+            muzzle_x + strip_length * i * x,
+            muzzle_y + strip_length * i * y,
+            player.mo.height / 2 + strip_length * i * z,
             MT_GLUONLASER
         )
 
@@ -177,9 +177,8 @@ addHook("HL_OnPrimaryUse", function(player, weapon)
 end, HL.Weapons.GluonGun.Name)
 
 addHook("HL_OnHitscanHit", function(player, projectile, target)
-    SpawnGluonRay(player, projectile.x, projectile.y)
+    SpawnGluonRay(player, target.x, target.y)
 end, HL.Weapons.GluonGun.Name)
-
 
 addHook("HL_OnWeaponLineHit", function(player, projectile, line)
     local x, y = P_ClosestPointOnLine(projectile.x, projectile.y, line)

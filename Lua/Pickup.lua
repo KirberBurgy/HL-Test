@@ -59,3 +59,4 @@ function HL.RegisterPickup(object_type)
 
     pickups[object_type] = $ or true
 end
+
