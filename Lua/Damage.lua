@@ -374,8 +374,10 @@ addHook("HL_OnWeaponHit", function(player, projectile, target)
     if target.HLHealth < 0 then
         P_DamageMobj(target, projectile, player.mo, 1 + ( target_last_health - target.HLHealth ) / object_defs[target.type].Health )
 
-        target.HLHealth = object_defs[target.type].Health + $
+        target.HLHealth = object_defs[target.type].Health
     end
 
     projectile.HL.Hit[target] = true
+
+    return false
 end)
