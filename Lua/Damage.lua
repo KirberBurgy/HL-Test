@@ -357,7 +357,6 @@ HL.Register(MT_EGGMOBILE, {
 ---@param target mobj_t
 ---@return boolean?
 addHook("HL_OnWeaponHit", function(player, projectile, target)
-    -- If the target health is not set (-1) then return (use regular damage checks)
     if not (target and target.HLHealth and target.HLHealth ~= -1) then
         return
     end
@@ -365,7 +364,7 @@ addHook("HL_OnWeaponHit", function(player, projectile, target)
     projectile.HL.Hit = $ or {}
 
     if projectile.HL.Hit[target] then
-        return false
+        return
     end
 
     local target_last_health = target.HLHealth
@@ -374,8 +373,10 @@ addHook("HL_OnWeaponHit", function(player, projectile, target)
     if target.HLHealth < 0 then
         P_DamageMobj(target, projectile, player.mo, 1 + ( target_last_health - target.HLHealth ) / object_defs[target.type].Health )
 
-        target.HLHealth = object_defs[target.type].Health + $
+        target.HLHealth = object_defs[target.type].Health + ($ % object_defs[target.type].Health)
     end
 
     projectile.HL.Hit[target] = true
+
+    return false
 end)

@@ -100,11 +100,12 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     
             local step = length / num_points * i
     
-            local midpoint_distance = FixedDiv(R_PointToDist2(strip.x + FixedMul(x, step), strip.y + FixedMul(y, step), midpoint_x, midpoint_y), dist_max)
+            local midpoint_distance = R_PointToDist2(strip.x + FixedMul(x, step), strip.y + FixedMul(y, step), midpoint_x, midpoint_y)
 
-            local distance = (FU - midpoint_distance) * 16 -- Spiral radius
-            if midpoint_distance < FixedDiv(FU / 4, dist_max) then
-                distance = 16 * FU
+            local distance = 0 * FU
+
+            if midpoint_distance < (10 * FU) then
+                distance = 0
             end
 
             -- fucky wucky math stuff i dont like

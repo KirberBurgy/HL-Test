@@ -45,19 +45,27 @@ local function OnWeaponHit(projectile, hit)
 
     HL.PlayHitEnemySound(projectile, projectile.HL.SourceFire.Fire)
 
+    local override = nil
+
     for _, hook in ipairs(correct_hook) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            hook.Callback(projectile.target.player, projectile, hit)
+            override = $ or hook.Callback(projectile.target.player, projectile, hit)
         end
     end
 
     for _, hook in ipairs(HL.Hooks.OnWeaponHit) do
         if not hook.Extra or hook.Extra == projectile.HL.SourceWeapon.Name then
-            hook.Callback(projectile.target.player, projectile, hit)
+            override = $ or hook.Callback(projectile.target.player, projectile, hit)
         end
     end 
 
-    return false
+    return override
+end
+
+local function OnWeaponMovedInto()
+    return function(hit, projectile)
+        return OnWeaponHit(projectile, hit)
+    end
 end
 
 ---@param mo mobj_t
@@ -198,15 +206,19 @@ end
 ---@param player player_t
 ---@param hl hlplayer_t
 local function HandlePrimaryFire(player, hl)
+    if hl.WeaponPalette.Open then
+        return
+    end
+
+    if hl.Cooldown > 0 then
+        return
+    end
+    
     if not (player.cmd.buttons & BT_ATTACK) then
         if hl.CurrentWeapon.PrimaryFire.Fire.Automatic and (player.lastbuttons & BT_ATTACK) then
             RunStopHooks(player, hl, HL.Hooks.OnPrimaryStop)
         end
 
-        return
-    end
-
-    if hl.Cooldown > 0 then
         return
     end
 
@@ -233,7 +245,14 @@ end
 ---@param player player_t
 ---@param hl hlplayer_t
 local function HandleSecondaryFire(player, hl)
-    if not (hl.CurrentWeapon.SecondaryFire) then
+    if not hl.CurrentWeapon.SecondaryFire then
+        return
+    end
+    if hl.WeaponPalette.Open then
+        return
+    end
+
+    if hl.Cooldown > 0 then
         return
     end
 
@@ -242,10 +261,6 @@ local function HandleSecondaryFire(player, hl)
             RunStopHooks(player, hl, HL.Hooks.OnSecondaryStop)
         end
 
-        return
-    end
-
-    if hl.Cooldown > 0 then
         return
     end
 
@@ -355,4 +370,5 @@ function HL.RegisterProjectile(object_type)
     addHook("MobjThinker", ProjectileThinker, object_type)
     addHook("MobjMoveBlocked", OnWeaponLineHit, object_type)
     addHook("MobjMoveCollide", OnWeaponHit, object_type)
+    addHook("MobjCollide", OnWeaponMovedInto(), object_type)
 end
