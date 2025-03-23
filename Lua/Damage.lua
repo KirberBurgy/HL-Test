@@ -93,7 +93,7 @@ HL.Register(MT_REDBUZZ, {
         { Object = MT_HLCLIP, Probability = FRACUNIT } 
     }
 })
-
+ 
 HL.Register(MT_SPRINGSHELL, {
     Health = 50 * FU,
     Damage = 15 * FU / 2,
@@ -370,7 +370,7 @@ addHook("HL_OnWeaponHit", function(player, projectile, target)
     local target_last_health = target.HLHealth
     target.HLHealth = $ - projectile.HL.Damage
 
-    if target.HLHealth < 0 then
+    if target.HLHealth <= 0 then
         P_DamageMobj(target, projectile, player.mo, 1 + ( target_last_health - target.HLHealth ) / object_defs[target.type].Health )
 
         target.HLHealth = object_defs[target.type].Health + ($ % object_defs[target.type].Health)
