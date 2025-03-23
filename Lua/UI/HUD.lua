@@ -120,7 +120,8 @@ addHook("HL_FreemanThinker", function(player)
         end
 
         hl.CurrentWeapon = weapon
-        hl.Cooldown = 10
+        hl.Cooldown = 16
+        hl.Reloading = false
         HL.SetAnimation(player, HL.AnimationType.Ready)
 
         for _, hook in ipairs(HL.Hooks.OnEquip) do

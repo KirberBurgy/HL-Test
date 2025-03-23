@@ -58,6 +58,12 @@ local function OnWeaponHit(projectile, hit)
     return override
 end
 
+local function OnWeaponMovedInto()
+    return function(hit, projectile)
+        return OnWeaponHit(projectile, hit)
+    end
+end
+
 ---@param mo mobj_t
 ---@param line line_t
 local function OnWeaponLineHit(mo, _, line)
@@ -196,15 +202,19 @@ end
 ---@param player player_t
 ---@param hl hlplayer_t
 local function HandlePrimaryFire(player, hl)
+    if hl.WeaponPalette.Open then
+        return
+    end
+
+    if hl.Cooldown > 0 then
+        return
+    end
+    
     if not (player.cmd.buttons & BT_ATTACK) then
         if hl.CurrentWeapon.PrimaryFire.Fire.Automatic and (player.lastbuttons & BT_ATTACK) then
             RunStopHooks(player, hl, HL.Hooks.OnPrimaryStop)
         end
 
-        return
-    end
-
-    if hl.Cooldown > 0 then
         return
     end
 
@@ -231,7 +241,14 @@ end
 ---@param player player_t
 ---@param hl hlplayer_t
 local function HandleSecondaryFire(player, hl)
-    if not (hl.CurrentWeapon.SecondaryFire) then
+    if not hl.CurrentWeapon.SecondaryFire then
+        return
+    end
+    if hl.WeaponPalette.Open then
+        return
+    end
+
+    if hl.Cooldown > 0 then
         return
     end
 
@@ -240,10 +257,6 @@ local function HandleSecondaryFire(player, hl)
             RunStopHooks(player, hl, HL.Hooks.OnSecondaryStop)
         end
 
-        return
-    end
-
-    if hl.Cooldown > 0 then
         return
     end
 
@@ -347,29 +360,11 @@ addHook("HL_FreemanThinker", function(player)
     end
 end)
 
--- garbanzo code
-local mobj_number = #mobjinfo - 1
-
-for i = 0, #mobjinfo - 1 do
-    if not ( mobjinfo[i].flags & MF_MISSILE ) then
-        continue
-    end
-
-    addHook("MobjThinker", ProjectileThinker, i)
-    addHook("MobjMoveBlocked", OnWeaponLineHit, i)
-    addHook("MobjMoveCollide", OnWeaponHit, i)
+--- Registers a projectile for use with weapon definitions.
+---@param object_type integer
+function HL.RegisterProjectile(object_type)
+    addHook("MobjThinker", ProjectileThinker, object_type)
+    addHook("MobjMoveBlocked", OnWeaponLineHit, object_type)
+    addHook("MobjMoveCollide", OnWeaponHit, object_type)
+    addHook("MobjCollide", OnWeaponMovedInto(), object_type)
 end
-
-addHook("AddonLoaded", function()
-    for i = mobj_number, #mobjinfo - 1 do
-        if not ( mobjinfo[i].flags & MF_MISSILE ) then
-            continue
-        end
-    
-        addHook("MobjThinker", ProjectileThinker, i)
-        addHook("MobjMoveBlocked", OnWeaponLineHit, i)
-        addHook("MobjMoveCollide", OnWeaponHit, i)
-    end
-
-    mobj_number = #mobjinfo - 1
-end)
