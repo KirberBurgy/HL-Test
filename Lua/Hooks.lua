@@ -37,10 +37,6 @@ local function OnWeaponHit(projectile, hit)
         return
     end
 
-    if projectile.HL.Hit and projectile.HL.Hit[hit] then
-        return false
-    end
-    
     local correct_hook = projectile.HL.IsHitscan and HL.Hooks.OnHitscanHit or HL.Hooks.OnProjectileHit
 
     HL.PlayHitEnemySound(projectile, projectile.HL.SourceFire.Fire)

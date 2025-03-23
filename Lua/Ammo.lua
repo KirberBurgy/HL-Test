@@ -1,6 +1,4 @@
----@param hl hlplayer_t
----@param ammo_type integer
----@param ammo integer
+---@class hl hlplayer_t
 function HL.AddAmmo(hl, ammo_type, ammo)
     hl.Inventory.Ammo[ammo_type] = max( min(HL.AmmoInfo[ammo_type].Maximum, ($ or 0) + ammo), 0 )
 end

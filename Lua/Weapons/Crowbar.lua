@@ -20,8 +20,6 @@ HL.AnimationType.Crowbar = {
     Hit = HL.CreateAnimationType()
 }
 
-HL.RegisterProjectile(MT_HLMELEESENTINEL)
-
 ---@class hlweapon_t
 HL.Weapons.Crowbar = {
     Name = "Crowbar",

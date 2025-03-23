@@ -165,10 +165,8 @@ rawset(_G, "P_ObjectIsPlayer", function(mo)
 end)
 
 dofile("Ammo.lua")
-dofile("Animation.lua")
-
-dofile("Hooks.lua")
 dofile("Weapon.lua")
+dofile("Animation.lua")
 
 dofile("Weapons/Pistol.lua")
 dofile("Weapons/Magnum.lua")
@@ -179,11 +177,14 @@ dofile("Weapons/Gluon Gun.lua")
 dofile("Weapons/Crowbar.lua")
 
 dofile("Inventory.lua")
+dofile("Hooks.lua")
 dofile("Pickup.lua")
 dofile("Damage.lua")
 
 dofile("UI/Viewmodel.lua")
 dofile("UI/HUD.lua")
+
+HL.RegisterPickup(MT_RING)
 
 HL.RegisterPickup(MT_INFINITYRING)
 
@@ -192,30 +193,6 @@ HL.RegisterPickup(MT_RAILPICKUP)
 
 HL.RegisterPickup(MT_SCATTERRING)
 HL.RegisterPickup(MT_SCATTERPICKUP)
-
----@param player player_t
-addHook("HL_FreemanThinker", function(player)
-    if player.cmd.buttons & BT_CUSTOM2 then
-        P_SpawnMobjFromMobj(
-            player.mo,
-            cos(player.mo.angle) * 50,
-            sin(player.mo.angle) * 50,
-            0,
-            MT_WORLDTAU
-        )
-    end
-end)
-
-HL.RegisterPickup(MT_WORLDTAU)
-
-addHook("HL_OnHitscanHit", function()
-    print("Hit")
-end, HL.Weapons.Pistol.Name)
-
-addHook("HL_OnPickupGained", function(player)
-    HL.GiveWeapon(player, HL.Weapons.TauCannon)
-    HL.AddAmmo(player.HL, HL.AmmunitionType.Uranium, 20)
-end, MT_WORLDTAU)
 
 addHook("HL_OnPickupGained", function(player)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Bullet, 17 * 3)
@@ -229,7 +206,7 @@ end, MT_RAILRING)
 addHook("HL_OnPickupGained", function(player)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Cartridge, 12)
 
-    HL.GiveWeapon(player, HL.Weapons.Magnum)
+    HL.GiveWeapon(player, HL.Magnum)
 end, MT_RAILPICKUP)
 
 addHook("HL_OnPickupGained", function(player)
