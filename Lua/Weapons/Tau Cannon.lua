@@ -1,7 +1,7 @@
-freeslot("MT_TAUPROJECTILE", "MT_HLCORONA")
+freeslot("MT_TAUPROJECTILE", "MT_WORLDTAU", "MT_HLCORONA")
 
-freeslot("SPR_TAUP", "SPR_HLCR")
-freeslot("S_TAU_PROJECTILE", "S_HL_CORONA")
+freeslot("SPR_TAUP", "SPR_HLCR", "SPR_WTAU")
+freeslot("S_TAU_PROJECTILE", "S_HL_CORONA", "S_TAU_WORLD")
 
 freeslot("sfx_taudsc", "sfx_tauwd1", "sfx_tauwd2", "sfx_tauwd3")
 
@@ -16,6 +16,13 @@ states[S_HL_CORONA] = {
     tics = -1,
     sprite = SPR_HLCR,
     frame = A | FF_FLOORSPRITE | FF_ADD,
+    nextstate = S_NULL
+}
+
+states[S_TAU_WORLD] = {
+    tics = -1,
+    sprite = SPR_WTAU,
+    frame = A,
     nextstate = S_NULL
 }
 
@@ -35,10 +42,20 @@ mobjinfo[MT_HLCORONA] = {
     flags = MF_NOGRAVITY | MF_NOCLIPHEIGHT | MF_NOCLIP
 }
 
+mobjinfo[MT_WORLDTAU] = {
+    spawnstate = S_TAU_WORLD,
+    spawnhealth = 10000,
+    radius = 32 * FU,
+    height = 32 * FU,
+    flags = MF_SPECIAL
+}
+
 HL.AnimationType.TauCannon = {
     SpinUp = HL.CreateAnimationType(),
     Spin   = HL.CreateAnimationType()
 }
+
+HL.RegisterProjectile(MT_TAUPROJECTILE)
 
 ---@param player player_t
 HL.AnimationMap[HL.AnimationType.TauCannon.SpinUp] = function(player)
@@ -236,3 +253,5 @@ addHook("MobjThinker", function(corona)
         corona.frame = A | FF_PAPERSPRITE | FF_ADD | transparency
     end
 end, MT_HLCORONA)
+
+
