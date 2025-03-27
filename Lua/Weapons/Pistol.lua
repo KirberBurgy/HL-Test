@@ -20,9 +20,7 @@ HL.Weapons.Pistol = {
             DamageVariance = FU / 2,
             Spread = FU / 10,
             RequiredAmmo = 1,
-            FireSound = {
-                sfx_9mmsh1
-            }
+            FireSound = sfx_9mmsh1
         }
     },
     SecondaryFire = {
@@ -34,9 +32,7 @@ HL.Weapons.Pistol = {
             DamageVariance = FU / 2,
             Spread = FU / 3,
             RequiredAmmo = 1,
-            FireSound = {
-                sfx_9mmsh1
-            }
+            FireSound = sfx_9mmsh1
         }
     }
 }

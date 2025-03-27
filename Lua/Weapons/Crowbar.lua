@@ -46,9 +46,7 @@ HL.Weapons.Crowbar = {
                 Fuse = 4
             },
 
-            FireSound = {
-                sfx_crbmss
-            },
+            FireSound = sfx_crbmss,
 
             HitEnemySound = {
                 sfx_crbhe1,

@@ -96,9 +96,9 @@ HL.AmmoInfo = {
 ---@field DamageVariance fixed_t The variance of damage of this mode of fire, where Actual Damage = Damage +- Random(0, DamageVariance) / 2.
 ---@field Spread fixed_t The spread of the weapon in both dimensions.
 ---@field RequiredAmmo integer The amount of ammunition required to use this mode of fire.
----@field FireSound table? The sound (or a random sound from this list) played when this weapon is fired.
----@field HitWallSound table? The sound (or a random sound from this list) played when this weapon hits a wall.
----@field HitEnemySound table? The sound (or a random sound from this list) played when this weapon hits an enemy.
+---@field FireSound table|integer? The sound (or a random sound from this list) played when this weapon is fired.
+---@field HitWallSound table|integer? The sound (or a random sound from this list) played when this weapon hits a wall.
+---@field HitEnemySound table|integer? The sound (or a random sound from this list) played when this weapon hits an enemy.
 ---@field Projectile hlproj_t? The projectile fired by the weapon. If nil, then the weapon is a hitscan weapon.
 
 ---@param player_mo mobj_t
@@ -109,12 +109,6 @@ function HL.PlayRandomSound(player_mo, sound_table)
 
     if type(sound_table) == "number" then
         S_StartSound(player_mo, sound_table)
-
-        return
-    end
-
-    if #sound_table == 1 then
-        S_StartSound(player_mo, sound_table[1])
 
         return
     end

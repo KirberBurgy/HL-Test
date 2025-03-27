@@ -79,7 +79,7 @@ local function OnWeaponLineHit(mo, _, line)
         return
     end
 
-    HL.PlayHitWallSound(mo, mo.HL.SourceFire.Fire)
+    HL.PlayHitWallSound(mo.HL.Player.mo, mo.HL.SourceFire.Fire)
 
     for _, hook in ipairs(HL.Hooks.OnWeaponLineHit) do
         if not hook.Extra or hook.Extra == mo.HL.SourceWeapon.Name then

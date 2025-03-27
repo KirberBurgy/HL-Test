@@ -76,6 +76,8 @@ addHook("HL_FreemanThinker", function(player)
         CloseTimer = 0
     }
 
+
+    
     if (player.cmd.buttons & BT_WEAPONNEXT) then
         if not hl.WeaponPalette.Open then
             while not (hl.Inventory.Weapons[hl.WeaponPalette.Class] and #hl.Inventory.Weapons[hl.WeaponPalette.Class] > 0) do

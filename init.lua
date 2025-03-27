@@ -194,25 +194,6 @@ HL.RegisterPickup(MT_RAILPICKUP)
 HL.RegisterPickup(MT_SCATTERRING)
 HL.RegisterPickup(MT_SCATTERPICKUP)
 
----@param player player_t
-addHook("HL_FreemanThinker", function(player)
-    if player.cmd.buttons & BT_CUSTOM2 then
-        P_SpawnMobjFromMobj(
-            player.mo,
-            cos(player.mo.angle) * 50,
-            sin(player.mo.angle) * 50,
-            0,
-            MT_WORLDTAU
-        )
-    end
-end)
-
-HL.RegisterPickup(MT_WORLDTAU)
-
-addHook("HL_OnHitscanHit", function()
-    print("Hit")
-end, HL.Weapons.Pistol.Name)
-
 addHook("HL_OnPickupGained", function(player)
     HL.GiveWeapon(player, HL.Weapons.TauCannon)
     HL.AddAmmo(player.HL, HL.AmmunitionType.Uranium, 20)

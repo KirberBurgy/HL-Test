@@ -66,8 +66,6 @@ addHook("HUD", function(drawer, player, camera)
         return
     end
 
-    print(hl.ViewmodelData.Animation.Sentinel .. hl.ViewmodelData.Progress)
-    
     local patch = drawer.cachePatch( hl.ViewmodelData.Animation.Sentinel .. hl.ViewmodelData.Progress )
     drawer.drawScaled(viewmodel.OffsetX, viewmodel.OffsetY, FRACUNIT, patch, V_SNAPTOBOTTOM | viewmodel.Flags)
 end, "game")
