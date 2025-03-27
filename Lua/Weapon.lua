@@ -85,9 +85,9 @@ function HL.FireHitscanWeapon(player, weapon, fire_mode)
     local yaw = player.mo.angle
     local pitch = player.aiming
 
-    bullet.momx = FixedMul(cos( yaw ), cos(pitch)) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
-    bullet.momy = FixedMul(sin( yaw ), cos(pitch)) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
-    bullet.momz = sin(pitch) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
+    bullet.momx = FixedMul(FixedMul(cos( yaw ), cos(pitch)), FU - FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ))
+    bullet.momy = FixedMul(FixedMul(sin( yaw ), cos(pitch)), FU - FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ))
+    bullet.momz = FixedMul(sin(pitch), FU - FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ))
 
     return bullet
 end
@@ -118,9 +118,9 @@ function HL.FireProjectileWeapon(player, weapon, fire_mode)
     local yaw = player.mo.angle
     local pitch = player.aiming
 
-    bullet.momx = FixedMul( FixedMul(cos( yaw ), cos(pitch)), fire_mode.Fire.Projectile.Speed ) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
-    bullet.momy = FixedMul( FixedMul(sin( yaw ), cos(pitch)), fire_mode.Fire.Projectile.Speed ) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
-    bullet.momz = FixedMul( sin(pitch), fire_mode.Fire.Projectile.Speed ) + FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ) / 10
+    bullet.momx = FixedMul(FixedMul( FixedMul(cos( yaw ), cos(pitch)), fire_mode.Fire.Projectile.Speed ), FU - FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ))
+    bullet.momy = FixedMul(FixedMul( FixedMul(sin( yaw ), cos(pitch)), fire_mode.Fire.Projectile.Speed ), FU - FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ))
+    bullet.momz = FixedMul(FixedMul( sin(pitch), fire_mode.Fire.Projectile.Speed ), FU - FixedMul( P_RandomFixed() - FU / 2, fire_mode.Fire.Spread ))
 
     return bullet
 end

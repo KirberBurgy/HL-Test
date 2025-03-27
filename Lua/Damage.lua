@@ -297,7 +297,7 @@ HL.Register(MT_ROCKET, {
     Damage = 39 * FU
 })
 
-HL.Register(MT_POINTY, {
+HL.Register(MT_SPINCUSHION, {
     Health = 90 * FU,
     Damage = 37 * FU,
     Pickups = {
@@ -348,6 +348,11 @@ HL.Register(MT_EGGMOBILE, {
         { Object = MT_HLSHOTGUNDROP, Probability = FRACUNIT },
         { Object = MT_HLSMGDROP, Probability = FRACUNIT }
     }
+})
+
+HL.Register(MT_FANG, {
+    Health = 50 * FU,
+    Damage = 15 * FU
 })
 
 --#endregion

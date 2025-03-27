@@ -82,14 +82,10 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     local y = FixedMul(sin(yaw), cos(pitch))
     local z = sin(pitch)
 
-    local world_muzzle_x = player.mo.x + sin(yaw) * 36
-    local world_muzzle_y = player.mo.y - cos(yaw) * 36
+    local muzzle_x = sin(yaw) * 36
+    local muzzle_y = -cos(yaw) * 36
 
-    local midpoint_x = (player.mo.x + end_point_x) / 2
-    local midpoint_y = (player.mo.y + end_point_y) / 2
-    local dist_max = R_PointToDist2(player.mo.x, player.mo.y, end_point_x, end_point_y) / 2
-
-    local function SpawnGluonSpiral(strip)
+    local function SpawnGluonSpiral(strip, j)
         --print(tostring(distance))
 
         local length = 33 * 4 * FU
@@ -98,29 +94,27 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     
         for i = 1, num_points do
             ---@type angle_t
-            local angle = yaw + (leveltime * ANG1) + ANGLE_11hh * (i - 1)
-    
+            local angle = yaw + (leveltime * ANG1) + ANGLE_11hh * (i - 1) 
             local step = length / num_points * i
     
-            local midpoint_distance = R_PointToDist2(strip.x + FixedMul(x, step), strip.y + FixedMul(y, step), midpoint_x, midpoint_y)
+            local distance = 16 * FU
 
-            local distance = 0 * FU
-
-            if midpoint_distance < (10 * FU) then
-                distance = 0
+            if j == 1 then
+                distance = 16 * FU * i / num_points
             end
 
+            if j == strips then
+                distance = 16 * FU * (num_points - i) / num_points
+            end
+
+
             -- fucky wucky math stuff i dont like
-    
-            -- forms a unit circle around a line
-            -- P(a) = [(-cos a)(sin y) - (sin a)(cos y)(sin p)]
-            --        [(cos a)(cos y) - (sin a)(sin y)(sin p)]
-            --        [(sin a)(cos p)]
-    
-            local particle = P_SpawnMobj(
-                strip.x + FixedMul( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)), distance) + FixedMul(x, step) - sin(yaw) * 18,
-                strip.y + FixedMul( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)), distance) + FixedMul(y, step) + cos(yaw) * 18,
-                strip.z + FixedMul( FixedMul( sin(angle), cos(pitch)), distance ) + FixedMul(z, step),
+ 
+            local particle = P_SpawnMobjFromMobj(
+                strip,
+                FixedMul( FixedMul(-cos(angle), sin(yaw)) - FixedMul(FixedMul(sin(angle), cos(yaw)), sin(pitch)), distance) + FixedMul(x, step) - muzzle_x / 2,
+                FixedMul( FixedMul( cos(angle), cos(yaw)) - FixedMul(FixedMul(sin(angle), sin(yaw)), sin(pitch)), distance) + FixedMul(y, step) - muzzle_y / 2,
+                FixedMul( FixedMul( sin(angle), cos(pitch)), distance ) + FixedMul(z, step),
                 MT_GLUONPARTICLE
             )
             particle.fuse = 2
@@ -128,10 +122,11 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
     end
     
     for i = 1, strips do
-        local strip = P_SpawnMobj(
-            world_muzzle_x + strip_length * i * x,
-            world_muzzle_y + strip_length * i * y,
-            player.mo.z    + player.mo.height / 2 + strip_length * i * z,
+        local strip = P_SpawnMobjFromMobj(
+            player.mo,
+            muzzle_x + strip_length * i * x,
+            muzzle_y + strip_length * i * y,
+            player.mo.height / 2 + strip_length * i * z,
             MT_GLUONLASER
         )
 
@@ -147,7 +142,7 @@ local function SpawnGluonRay(player, end_point_x, end_point_y)
         strip.floorspriteslope.o = { x = strip.x, y = strip.y, z = strip.z }
 
         if (i - 1) % 4 == 0 then
-            SpawnGluonSpiral(strip)
+            SpawnGluonSpiral(strip, i)
         end
     end
 end

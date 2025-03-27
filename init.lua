@@ -183,6 +183,8 @@ dofile("Inventory.lua")
 dofile("Pickup.lua")
 dofile("Damage.lua")
 
+dofile("Suit Sound.lua")
+
 dofile("UI/Viewmodel.lua")
 dofile("UI/HUD.lua")
 
@@ -193,6 +195,10 @@ HL.RegisterPickup(MT_RAILPICKUP)
 
 HL.RegisterPickup(MT_SCATTERRING)
 HL.RegisterPickup(MT_SCATTERPICKUP)
+
+addHook("HL_OnWeaponLineHit", function(p, proj)
+    P_SpawnMobjFromMobj(proj, 0, 0, 0, MT_RING)
+end)
 
 addHook("HL_OnPickupGained", function(player)
     HL.GiveWeapon(player, HL.Weapons.TauCannon)
